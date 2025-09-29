@@ -2,48 +2,16 @@
 ================================
          DATOS DEL PAQUETE      
 ================================
-ID:                 213123213
-Descripcion:        DADWAD
-Peso:               21312.000000 kg
-Dimensiones:        23213213
-Estado:             dwad
-Remitente ID:       312321321
-Destinatario ID:    3123213
-Sucursal Origen:    432343123
-Sucursal Destino:   3213123
-Fecha Envio:        3213
-Fecha Entrega Est:  
-================================
-
-================================
-         DATOS DEL PAQUETE      
-================================
-ID:                 3213123
-Descripcion:        la iglesia de pepe
-Peso:               231.000000 kg
-Dimensiones:        323
+ID:                 132313
+Descripcion:        obj
+Peso:               12.000000 kg
+Dimensiones:        1232
 Estado:             nuevo
-Remitente ID:       23132
-Destinatario ID:    2147483647
-Sucursal Origen:    -1988231097
-Sucursal Destino:   172064
-Fecha Envio:        
-Fecha Entrega Est:  
-================================
-
-================================
-         DATOS DEL PAQUETE      
-================================
-ID:                 3213123
-Descripcion:        dwadaw
-Peso:               3213.000000 kg
-Dimensiones:        3213
-Estado:             dwadaw
-Remitente ID:       312321
-Destinatario ID:    3213213
-Sucursal Origen:    321312
-Sucursal Destino:   3213213
-Fecha Envio:        213132
-Fecha Entrega Est:  
+Remitente ID:       13213
+Destinatario ID:    213213
+Sucursal Origen:    1
+Sucursal Destino:   2
+Fecha Envio:        12
+Fecha Entrega Est:  31
 ================================
 

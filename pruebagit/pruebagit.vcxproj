@@ -126,7 +126,11 @@
     <ResourceCompile Include="app.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Librerias.h" />
+    <ClInclude Include="NodoPila.h" />
+    <ClInclude Include="Paquete.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="PilaPaquete.h" />
     <ClInclude Include="Resource.h" />
   </ItemGroup>
   <ItemGroup>
