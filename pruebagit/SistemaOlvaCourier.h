@@ -3,6 +3,10 @@
 #include "Paquete.h"
 #include "Pago.h"
 #include "Boleta.h"
+#include"PilaPaquete.h"
+#include"NodoPila.h"
+#include"Paquete.h"
+
 
 class SistemaPrincipal
 {
@@ -40,7 +44,7 @@ public:
 				return;
 			}
 		}
-		cout << "No se encontró un paquete con ID " << _id << "." << endl;
+		cout << "No se encontrï¿½ un paquete con ID " << _id << "." << endl;
 	}
 
 	bool actualizarEstadoPaquete(int _id, const string& nuevoEstado) {
@@ -52,7 +56,7 @@ public:
 				return true;
 			}
 		}
-		cout << "No se encontró un paquete con ID " << _id << "." << endl;
+		cout << "No se encontrï¿½ un paquete con ID " << _id << "." << endl;
 		return false;
 	}
 
