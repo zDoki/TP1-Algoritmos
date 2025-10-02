@@ -7,7 +7,7 @@ public:
 	string descripcion;
 	double peso;
 	string dimensiones;
-	string estado; // "registrado", "en_transito", "entregado", "perdido"
+	string estado; // "registrado", "en transito", "entregado", "perdido"
 	int remitenteId;
 	int destinatarioId;
 	int sucursalOrigenId;
@@ -16,7 +16,7 @@ public:
 	string fechaEntregaEstimada;
 
 	Paquete(int _id, string _descripcion, double _peso, string _dimensiones, string _estado, int _remitenteId, int _destinatarioId, int _sucursalOrigenId, int _sucursalDestinoId, string _fechaEnvio, string _fechaEntregaEstimada) :
-		id(_id), descripcion(_descripcion), peso(_peso), dimensiones(_dimensiones), estado(_estado), remitenteId(_remitenteId), destinatarioId(_destinatarioId), sucursalOrigenId(_sucursalOrigenId), sucursalDestinoId(_sucursalDestinoId), fechaEnvio(_fechaEnvio), fechaEntregaEstimada(fechaEntregaEstimada) {};
+		id(_id), descripcion(_descripcion), peso(_peso), dimensiones(_dimensiones), estado(_estado), remitenteId(_remitenteId), destinatarioId(_destinatarioId), sucursalOrigenId(_sucursalOrigenId), sucursalDestinoId(_sucursalDestinoId), fechaEnvio(_fechaEnvio), fechaEntregaEstimada(_fechaEntregaEstimada) {};
 
 	Paquete() : id(0), peso(0.0), remitenteId(0), destinatarioId(0),
 		sucursalOrigenId(0), sucursalDestinoId(0) {}
@@ -64,6 +64,31 @@ public:
 		resultado += "Fecha Entrega Est:  " + fechaEntregaEstimada + "\n";
 		resultado += "================================\n\n";
 		return resultado;
+	}
+
+	bool leerDesdeArchivo(ifstream& archivo) {
+		string linea;
+		if (!getline(archivo, linea)) return false; // no hay más líneas
+
+		if (linea.empty()) return false;
+
+		// Separar por '|'
+		stringstream ss(linea);
+		string campo;
+
+		getline(ss, campo, '|'); id = stoi(campo);
+		getline(ss, descripcion, '|');
+		getline(ss, campo, '|'); peso = stod(campo);
+		getline(ss, dimensiones, '|');
+		getline(ss, estado, '|');
+		getline(ss, campo, '|'); remitenteId = stoi(campo);
+		getline(ss, campo, '|'); destinatarioId = stoi(campo);
+		getline(ss, campo, '|'); sucursalOrigenId = stoi(campo);
+		getline(ss, campo, '|'); sucursalDestinoId = stoi(campo);
+		getline(ss, fechaEnvio, '|');
+		getline(ss, fechaEntregaEstimada, '|');
+
+		return true;
 	}
 
 

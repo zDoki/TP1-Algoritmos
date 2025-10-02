@@ -2,16 +2,32 @@
 ================================
          DATOS DEL PAQUETE      
 ================================
-ID:                 132313
-Descripcion:        obj
-Peso:               12.000000 kg
+ID:                 00011
+Descripcion:        Juguete
+Peso:               12.0000 kg
 Dimensiones:        1232
 Estado:             nuevo
-Remitente ID:       13213
-Destinatario ID:    213213
-Sucursal Origen:    1
-Sucursal Destino:   2
-Fecha Envio:        12
-Fecha Entrega Est:  31
+Remitente ID:       00001
+Destinatario ID:    00012
+Sucursal Origen:    San Isidro
+Sucursal Destino:   San Borja
+Fecha Envio:        1-10-2025
+Fecha Entrega Est:  5-10-2025
+================================
+
+================================
+         DATOS DEL PAQUETE      
+================================
+ID:                 0
+Descripcion:        
+Peso:               0.000000 kg
+Dimensiones:        
+Estado:             
+Remitente ID:       821469152
+Destinatario ID:    909764656
+Sucursal Origen:    0
+Sucursal Destino:   0
+Fecha Envio:        
+Fecha Entrega Est:  
 ================================
 

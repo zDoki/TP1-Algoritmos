@@ -126,12 +126,16 @@
     <ResourceCompile Include="app.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Boleta.h" />
+    <ClInclude Include="NodoPago.h" />
     <ClInclude Include="Librerias.h" />
     <ClInclude Include="NodoPila.h" />
+    <ClInclude Include="Pago.h" />
     <ClInclude Include="Paquete.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PilaPaquete.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="SistemaOlvaCourier.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />

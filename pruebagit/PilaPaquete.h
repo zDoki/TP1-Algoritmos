@@ -22,7 +22,6 @@ public:
 	}
 
 	void push(T valor) {
-
 		NodoPila<T>* nuevo = new NodoPila<T>(valor);
 
 		nuevo->siguiente = tope;
@@ -44,14 +43,10 @@ public:
 		delete temp;
 		tamanio--;
 		return data;
-
-
-
 	}
 
 	void guardarPaqueteEnArchivo(T paquete, const string& nombreArchivo) {
 		ofstream archivo(nombreArchivo, ios::app);
-
 		if (archivo.is_open()) {
 
 			archivo.seekp(0, ios::end);
@@ -68,13 +63,9 @@ public:
 		else {
 			cout << "Error No se pudo abrir el archivo" << endl;
 		}
-
-
 	}
 
 	void mostrarTodos() {
-
-
 		if (!tope)
 		{
 			cout << "Pila vacia" << endl;
@@ -88,7 +79,6 @@ public:
 			cout << "-----------------------------" << endl;
 			actual = actual->siguiente;
 		}
-
 	}
 
 	int getTamaino()const {
@@ -96,7 +86,7 @@ public:
 	}
 
 	bool estaVacia()const {
-		return tope = nullptr;
+		return tope == nullptr;
 	}
 
 
@@ -114,7 +104,6 @@ public:
 		string linea;
 		bool hayContenido = false;
 
-
 		while (getline(archivo, linea)) {
 			cout << linea << endl;
 			hayContenido = true;
@@ -128,7 +117,23 @@ public:
 		cout << "\n===============================================" << endl;
 	}
 
+	void cargarDesdeArchivo(const string& nombreArchivo) {
+		ifstream archivo(nombreArchivo);
+		if (!archivo.is_open()) {
+			cout << "No se pudo abrir el archivo '" << nombreArchivo << "'\n";
+			return;
+		}
 
+		while (!archivo.eof()) {
+			T paquete;
+			if (paquete.leerDesdeArchivo(archivo)) { // Método que deberás crear en Paquete
+				push(paquete);
+			}
+		}
+
+		archivo.close();
+		cout << "Paquetes cargados desde " << nombreArchivo << endl;
+	}
 
 };
 
