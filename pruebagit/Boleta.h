@@ -34,56 +34,54 @@ public:
 		return string(buffer);
 	}
 
-	void guardarArchivoBinario(const string& archivo) {
-		ofstream out(archivo, ios::binary | ios::app);
+	void guardarArchivoTexto(const string& archivo) {
+		ofstream out(archivo, ios::app);
 		if (!out) {
-			cout << "El archivo no se pudo guardar.\n";
+			cout << "No se pudo abrir el archivo para guardar boleta.\n";
 			return;
 		}
-		size_t len;
 
-		// Guardar numero de boleta
-		len = numeroBoleta.size();
-		out.write(reinterpret_cast<const char*>(&len), sizeof(len));
-		out.write(numeroBoleta.c_str(), len);
+		// Construyo la parte del pago como texto (sin salto)
+		ostringstream pagoStr;
+		pagoStr << pagoAsociado.getProducto() << "|"
+			<< pagoAsociado.getCantidad() << "|"
+			<< fixed << setprecision(2) << pagoAsociado.getPrecioUnitario() << "|"
+			<< pagoAsociado.metodo.getTipoPago();
 
-		// Guardar fecha de emision
-		len = fechaEmision.size();
-		out.write(reinterpret_cast<const char*>(&len), sizeof(len));
-		out.write(fechaEmision.c_str(), len);
-
-		// Guardar datos del pago asociado
-		pagoAsociado.guardarPago(out);
-
+		out << numeroBoleta << "|" << fechaEmision << "|" << pagoStr.str() << "\n";
 		out.close();
 	}
 
-	void cargarArchivoBinario(const string& archivo) {
-		ifstream in(archivo, ios::binary);
+	void cargarArchivoTexto(const string& archivo) {
+		ifstream in(archivo);
 		if (!in) {
-			cout << "El archivo no se pudo abrir.\n";
+			cout << "No se pudo abrir el archivo: " << archivo << "\n";
 			return;
 		}
 
-		size_t len;
-		string buffer;
-
-		// Cargar numero de boleta
-		in.read(reinterpret_cast<char*>(&len), sizeof(len));
-		buffer.resize(len);
-		in.read(&buffer[0], len);
-		numeroBoleta = buffer;
-
-		// Cargar fecha de emision
-		in.read(reinterpret_cast<char*>(&len), sizeof(len));
-		buffer.resize(len);
-		in.read(&buffer[0], len);
-		fechaEmision = buffer;
-
-		// Cargar datos del pago asociado
-		pagoAsociado.cargarPago(in);
-
+		string linea, ultima;
+		while (getline(in, linea)) {
+			if (!linea.empty()) ultima = linea;
+		}
 		in.close();
+
+		if (ultima.empty()) {
+			cout << "El archivo de boletas está vacío.\n";
+			return;
+		}
+
+		// Parseo: numeroBoleta | fechaEmision | pagoStr
+		istringstream ss(ultima);
+		string pagoStr;
+		if (!getline(ss, numeroBoleta, '|') ||
+			!getline(ss, fechaEmision, '|') ||
+			!getline(ss, pagoStr)) {
+			cout << "Formato de boleta inválido en el archivo.\n";
+			return;
+		}
+
+		// Delego el parseo de pago al método del Pago (debe aceptar "producto;cantidad;precio;metodo")
+		pagoAsociado.cargarPagoTexto(pagoStr);
 	}
 
 	// Mostrar detalle de la boleta
@@ -103,5 +101,6 @@ public:
 		cout << "|                                           |\n";
 		cout << "|-------------------------------------------|\n";
 	}
+
 
 };

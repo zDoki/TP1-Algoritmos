@@ -71,16 +71,5 @@ public:
 		gestionBoleta.mostrarBoleta();
 	}
 
-	// guardado en archivos
-	void guardandoPagos(const string& archivo) {
-		gestionarPagos.guardarPagosBinario(archivo);
-		cout << "Los pagos se guardaron en " << archivo << endl;
-	}
-
-	void cargandoPagos(const string& archivo) {
-		gestionarPagos.cargarPagosBinario(archivo);
-		cout << "Los pagos se cargaron de " << archivo << endl;
-	}
-
 };
 

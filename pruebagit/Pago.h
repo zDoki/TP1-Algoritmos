@@ -1,8 +1,7 @@
 #pragma once
-#include "pch.h"
+#include "Librerias.h"
 #include "NodoPago.h"
 
-template <class T>
 class metodoPago {
 public:
 	string tipoPago;
@@ -18,23 +17,14 @@ public:
 
 	string getTipoPago() const { return tipoPago; }
 
-	// Guardar archivo en binario
+	// Guardar archivo en texto
 	void guardarMetodoPago(ofstream& out) const {
-		size_t len;
-		len = tipoPago.size();
-		out.write(reinterpret_cast<const char*>(&len), sizeof(len));
-		out.write(tipoPago.c_str(), len);
+		out << tipoPago;
 	}
 
-	// Abrir archivo de binario
-	void cargarMetodoPago(ifstream& in) {
-		size_t len;
-		string buffer;
-		// tipoPago
-		in.read(reinterpret_cast<char*>(&len), sizeof(len));
-		buffer.resize(len);
-		in.read(&buffer[0], len);
-		tipoPago = buffer;
+	// Abrir archivo en texto
+	void cargarMetodoPago(const string& tipo) {
+		tipoPago = tipo;
 	}
 };
 
@@ -45,15 +35,17 @@ private:
 	int cantidad;
 	double precioUnitario;
 public:
-	metodoPago<T> metodo;
+	metodoPago metodo;
 
 	string ajustarTexto(const string& texto, size_t ancho) const {
 		if (texto.size() > ancho) {
-			return texto.substr(0, ancho); // recorta texto
+			// recorta texto
+			return texto.substr(0, ancho);
 		}
 		else
 		{
-			return texto + string(ancho - texto.size(), ' '); // rellena con espacios
+			// rellena con espacios
+			return texto + string(ancho - texto.size(), ' ');
 		}
 	}
 
@@ -188,30 +180,31 @@ public:
 		cout << "|-------------------------------------------|\n";
 		cout << "| Metodo de Pago: " << ajustarTexto(metodo.getTipoPago(), 26) << "|\n";
 		cout << "| Son: " << ajustarTexto(montoEnTexto(), 37) << "|\n";
+		cout << "|                                           |\n";
 		cout << "|-------------------------------------------|\n";
 	}
 
 	// guardo de los pago en archivo de texto
-	void guardarPago(ofstream& out) const {
-		size_t len;
-		len = producto.size();
-		out.write(reinterpret_cast<const char*>(&len), sizeof(len));
-		out.write(producto.c_str(), len);
-		out.write(reinterpret_cast<const char*>(&cantidad), sizeof(cantidad));
-		out.write(reinterpret_cast<const char*>(&precioUnitario), sizeof(precioUnitario));
+	void guardarPagoTexto(ofstream& out) const {
+		out << producto << "|" << cantidad << "|"
+			<< fixed << setprecision(2) << precioUnitario << "|";
 		metodo.guardarMetodoPago(out);
+		out << "\n";
 	}
 
 	// cargo los pagos desde el archivo de texto
-	void cargarPago(ifstream& in) {
-		size_t len;
-		in.read(reinterpret_cast<char*>(&len), sizeof(len));
-		string buffer(len, '\0');
-		in.read(&buffer[0], len);
-		producto = buffer;
-		in.read(reinterpret_cast<char*>(&cantidad), sizeof(cantidad));
-		in.read(reinterpret_cast<char*>(&precioUnitario), sizeof(precioUnitario));
-		metodo.cargarMetodoPago(in);
+	void cargarPagoTexto(const string& linea) {
+		stringstream ss(linea);
+		string cant, precio, tipo;
+
+		getline(ss, producto, '|');
+		getline(ss, cant, '|');
+		getline(ss, precio, '|');
+		getline(ss, tipo, '|');
+
+		cantidad = stoi(cant);
+		precioUnitario = stod(precio);
+		metodo.cargarMetodoPago(tipo);
 	}
 };
 
@@ -280,30 +273,32 @@ public:
 		}
 	}
 
-	void guardarPagosBinario(const string& nombreArchivo) {
-		ofstream out(nombreArchivo, ios::binary);
+	void guardarPagosTexto(const string& nombreArchivo) {
+		ofstream out(nombreArchivo);
 		if (!out) {
 			cout << "No se pudo abrir el archivo.\n";
 			return;
 		}
 		NodoPago<T>* temp = cabeza;
 		while (temp) {
-			temp->dato.guardarPago(out);
+			temp->dato.guardarPagoTexto(out);
 			temp = temp->next;
 		}
 		out.close();
 	}
 
-	void cargarPagosBinario(const string& nombreArchivo) {
-		ifstream in(nombreArchivo, ios::binary);
+	void cargarPagosTexto(const string& nombreArchivo) {
+		ifstream in(nombreArchivo);
 		if (!in) {
 			cout << "No se pudo abrir el archivo.\n";
 			return;
 		}
-		while (in.peek() != EOF) {
+		string linea;
+		while (getline(in, linea)) {
+			if (linea.empty()) continue;
 			T pago;
-			pago.cargarPago(in);
-			if (in) registrarPago(pago);
+			pago.cargarPagoTexto(linea);
+			registrarPago(pago);
 		}
 		in.close();
 	}

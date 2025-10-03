@@ -127,6 +127,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Boleta.h" />
+    <ClInclude Include="Cliente.h" />
+    <ClInclude Include="NodoCliente.h" />
     <ClInclude Include="NodoPago.h" />
     <ClInclude Include="Librerias.h" />
     <ClInclude Include="NodoPila.h" />
@@ -136,6 +138,7 @@
     <ClInclude Include="PilaPaquete.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SistemaOlvaCourier.h" />
+    <ClInclude Include="Tranporte.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />

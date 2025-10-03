@@ -9,6 +9,8 @@
 #include <ostream>
 #include <iomanip>
 #include <iostream> 
+#include <conio.h>
+#include <random>
 
 using namespace std;
 using namespace System;
