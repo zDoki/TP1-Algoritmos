@@ -6,44 +6,67 @@ public:
 	int id;
 	string descripcion;
 	double peso;
-	string dimensiones;
-	string estado; // "registrado", "en transito", "entregado", "perdido"
 	int remitenteId;
 	int destinatarioId;
-	int sucursalOrigenId;
-	int sucursalDestinoId;
-	string fechaEnvio;
-	string fechaEntregaEstimada;
+	string sedeOrigen;
+	string destino;
 
-	Paquete(int _id, string _descripcion, double _peso, string _dimensiones, string _estado, int _remitenteId, int _destinatarioId, int _sucursalOrigenId, int _sucursalDestinoId, string _fechaEnvio, string _fechaEntregaEstimada) :
-		id(_id), descripcion(_descripcion), peso(_peso), dimensiones(_dimensiones), estado(_estado), remitenteId(_remitenteId), destinatarioId(_destinatarioId), sucursalOrigenId(_sucursalOrigenId), sucursalDestinoId(_sucursalDestinoId), fechaEnvio(_fechaEnvio), fechaEntregaEstimada(_fechaEntregaEstimada) {};
+	Paquete(string _descripcion = "", double _peso = 0.0,
+		int _remitenteId = 0, int _destinatarioId = 0, string _sedeOrigen = "",
+		string _destino = "") :	descripcion(_descripcion), peso(_peso),
+		remitenteId(_remitenteId), destinatarioId(_destinatarioId),
+		sedeOrigen(_sedeOrigen), destino(_destino) 
+	{
+		id = generarIDUnico("paquetes.txt");
+	}
+	
+	static int generarIDUnico(const string& archivo) {
+		int nuevoID;
+		bool repetido;
 
-	Paquete() : id(0), peso(0.0), remitenteId(0), destinatarioId(0),
-		sucursalOrigenId(0), sucursalDestinoId(0) {}
+		do {
+			// Genera ID en el rango [100, 999]
+			nuevoID = rand() % 999 + 100;
+			repetido = false;
 
+			// Verificar si el ID ya existe en el archivo
+			ifstream in(archivo);
+			string linea;
+			while (getline(in, linea)) {
+				if (linea.empty()) continue;
 
-	void mostrarInfoPaquete() {
+				stringstream ss(linea);
+				string campo;
+				getline(ss, campo, '|'); // Leer el primer campo (ID)
+				if (stoi(campo) == nuevoID) {
+					repetido = true;
+					break;
+				}
+			}
+			in.close();
+
+		} while (repetido); // Repetir hasta encontrar uno que no exista
+
+		return nuevoID;
+	}
+
+	void mostrarInfoPaquete() const {
 
 		cout << "ID " << id << endl;
 		cout << "Descripsion " << descripcion << endl;
 		cout << "Peso " << peso << endl;
-		cout << "Dimensiones " << dimensiones << endl;
-		cout << "Estado " << estado << endl;
 		cout << "Remitente ID " << remitenteId << endl;
 		cout << "Destinatario ID " << destinatarioId << endl;
-		cout << "Sucursal Origen " << sucursalOrigenId << endl;
-		cout << "Sucursal Destino " << sucursalDestinoId << endl;
-		cout << "Fecha Envio " << fechaEnvio << endl;
-		cout << "Fecha estimada de entrega " << fechaEntregaEstimada << endl;
-
+		cout << "Sucursal Origen " << sedeOrigen << endl;
+		cout << "Sucursal Destino " << destino << endl;
 
 	}
 
 	string toString()const {
 		return to_string(id) + "|" + descripcion + "|" + to_string(peso) + "|" +
-			dimensiones + "|" + estado + "|" + to_string(remitenteId) + "|" +
-			to_string(destinatarioId) + "|" + to_string(sucursalOrigenId) + "|" +
-			to_string(sucursalDestinoId) + "|" + fechaEnvio + "|" + fechaEntregaEstimada;
+			to_string(remitenteId) + "|" +
+			to_string(destinatarioId) + "|" + to_string(sedeOrigen) + "|" +
+			to_string(destino);
 	}
 
 	string toStringFormato() const {
@@ -54,21 +77,18 @@ public:
 		resultado += "ID:                 " + to_string(id) + "\n";
 		resultado += "Descripcion:        " + descripcion + "\n";
 		resultado += "Peso:               " + to_string(peso) + " kg\n";
-		resultado += "Dimensiones:        " + dimensiones + "\n";
-		resultado += "Estado:             " + estado + "\n";
 		resultado += "Remitente ID:       " + to_string(remitenteId) + "\n";
 		resultado += "Destinatario ID:    " + to_string(destinatarioId) + "\n";
-		resultado += "Sucursal Origen:    " + to_string(sucursalOrigenId) + "\n";
-		resultado += "Sucursal Destino:   " + to_string(sucursalDestinoId) + "\n";
-		resultado += "Fecha Envio:        " + fechaEnvio + "\n";
-		resultado += "Fecha Entrega Est:  " + fechaEntregaEstimada + "\n";
+		resultado += "Sucursal Origen:    " + sedeOrigen + "\n";
+		resultado += "Sucursal Destino:   " + destino + "\n";
+
 		resultado += "================================\n\n";
 		return resultado;
 	}
 
 	bool leerDesdeArchivo(ifstream& archivo) {
 		string linea;
-		if (!getline(archivo, linea)) return false; // no hay más líneas
+		if (!getline(archivo, linea)) return false; //
 
 		if (linea.empty()) return false;
 
@@ -79,14 +99,10 @@ public:
 		getline(ss, campo, '|'); id = stoi(campo);
 		getline(ss, descripcion, '|');
 		getline(ss, campo, '|'); peso = stod(campo);
-		getline(ss, dimensiones, '|');
-		getline(ss, estado, '|');
 		getline(ss, campo, '|'); remitenteId = stoi(campo);
 		getline(ss, campo, '|'); destinatarioId = stoi(campo);
-		getline(ss, campo, '|'); sucursalOrigenId = stoi(campo);
-		getline(ss, campo, '|'); sucursalDestinoId = stoi(campo);
-		getline(ss, fechaEnvio, '|');
-		getline(ss, fechaEntregaEstimada, '|');
+		getline(ss, campo, '|'); sedeOrigen = stoi(campo);
+		getline(ss, campo, '|'); destino = stoi(campo);
 
 		return true;
 	}

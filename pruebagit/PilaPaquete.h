@@ -126,7 +126,7 @@ public:
 
 		while (!archivo.eof()) {
 			T paquete;
-			if (paquete.leerDesdeArchivo(archivo)) { // Método que deberás crear en Paquete
+			if (paquete.leerDesdeArchivo(archivo)) {
 				push(paquete);
 			}
 		}

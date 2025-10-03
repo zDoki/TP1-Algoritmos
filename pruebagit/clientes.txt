@@ -1,0 +1,6 @@
+105|renzo|nava|778452|peru|gato@.com|rn123
+120|matias|garcia|782035|peru|garci@.com|maga105
+952|lucas|merino|605102|peru|merin@.com|merlu420
+615|mario|melgar|840125|peru|marito@.com|melman165
+129|alonso|alfonso|910245|peru|alfondo@.com|alfalfa40
+116|fredy|fausto|943057|peru|fredic@.com|fafi245

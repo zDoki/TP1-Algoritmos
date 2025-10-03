@@ -4,40 +4,80 @@
 
 class Cliente {
 private:
+    int id;
     string nombres, apellidos, dni, pais, correo, contrasena;
 public:
-    Cliente(string n = "", string a = "", string d = "",
+    Cliente(int _id = 0, string n = "", string a = "", string d = "",
         string p = "", string c = "", string pass = "")
-        : nombres(n), apellidos(a), dni(d), pais(p), correo(c), contrasena(pass) {
+        : id(_id), nombres(n), apellidos(a), dni(d),
+        pais(p), correo(c), contrasena(pass) {
     }
 
+	int getID() const { return id; }
     string getCorreo() const { return correo; }
     string getPassword() const { return contrasena; }
 
+    static int generarIDUnico(const string& archivo) {
+        int nuevoID;
+        bool repetido;
+
+        do {
+            // Genera ID en el rango [100, 999]
+            nuevoID = rand() % 999 + 100;
+            repetido = false;
+
+            // Verificar si el ID ya existe en el archivo
+            ifstream in(archivo);
+            string linea;
+            while (getline(in, linea)) {
+                if (linea.empty()) continue;
+
+                stringstream ss(linea);
+                string campo;
+                getline(ss, campo, '|'); // Leer el primer campo (ID)
+                if (stoi(campo) == nuevoID) {
+                    repetido = true;
+                    break;
+                }
+            }
+            in.close();
+
+        } while (repetido); // Repetir hasta encontrar uno que no exista
+
+        return nuevoID;
+    }
+    
     void mostrar() {
-        cout << "Cliente: " << nombres << " " << apellidos
+        cout << "ID: " << id
+            << "Cliente: " << nombres << " " << apellidos
             << " | DNI: " << dni << " | Pais: " << pais
             << " | Correo: " << correo << endl;
     }
 
     void guardarClienteTexto(ofstream& out) const {
-        out << nombres << "|" << apellidos << "|" << dni << "|"
+        out << id << "|" << nombres << "|" << apellidos << "|" << dni << "|"
             << pais << "|" << correo << "|" << contrasena << "\n";
     }
 
-    bool cargarClienteTexto(const string& linea) {
+    bool leerArchivoCliente(ifstream& archivo) {
+		string linea;
+        if (getline(archivo, linea)) {
+            return false;
+		}
+		if (linea.empty()) return false;
         stringstream ss(linea);
-        string temp;
-
-        if (!getline(ss, nombres, '|')) return false;
-        if (!getline(ss, apellidos, '|')) return false;
-        if (!getline(ss, dni, '|')) return false;
-        if (!getline(ss, pais, '|')) return false;
-        if (!getline(ss, correo, '|')) return false;
-        if (!getline(ss, contrasena, '|')) return false;
-
+        string campo;
+        getline(ss, campo, '|'); id = stoi(campo);
+        getline(ss, nombres, '|');
+        getline(ss, apellidos, '|');
+        getline(ss, dni, '|');
+        getline(ss, pais, '|');
+        getline(ss, correo, '|');
+        getline(ss, contrasena, '|');
         return true;
-    }
+
+	}       
+
 };
 
 
@@ -68,6 +108,28 @@ public:
         }
     }
 
+    T* buscarPorID(int id) {
+        NodoCliente<T>* temp = cabeza;
+        while (temp) {
+            if (temp->dato.getID() == id) {
+                return &(temp->dato);
+            }
+            temp = temp->siguiente;
+        }
+        return nullptr;
+	}
+
+    T* buscarPorCorreo(const string& correo) {
+        NodoCliente<T>* temp = cabeza;
+        while (temp) {
+            if (temp->dato.getCorreo() == correo) {
+                return &(temp->dato);
+            }
+            temp = temp->siguiente;
+        }
+        return nullptr;
+	}
+
     void guardarClientes(const string& nombreArchivo) const {
         ofstream out(nombreArchivo, ios::app);
         if (!out) {
@@ -92,7 +154,7 @@ public:
         string linea;
         while (getline(in, linea)) {
             T cliente;
-            if (cliente.cargarClienteTexto(linea)) {
+            if (cliente.leerArchivoCliente(in)) {
                 insertar(cliente);
             }
         }
