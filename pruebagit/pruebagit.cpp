@@ -183,87 +183,57 @@ void sistemaInicioSesion() {
             if (listaClientes.ingresoCuenta(c, pass)) {
                 cout << "Ingreso exitoso\n";
 
-                char teclaUser;
-                bool salirUser = false;
-                while (!salirUser) {
-                    menuCliente();
-                    teclaUser = getch();
+int main()
+{
+	int opcion;
+	SistemaPrincipal sistema;
 
                     switch (tecla) {
 
-                        // ------------------- Opcion 1: Registrar productos -------------------
-                    case '1': {
-                        cout << "Opcion Registrar productos seleccionada.\n";
-                        // Lógica para enviar productos
-                        system("pause");
-                        break;
-                    }
-                            // ------------------- Opcion 2: Ver mis envios -------------------
-                    case '2': {
-                        cout << "Opcion Ver mis envios seleccionada.\n";
-                        // Lógica para ver envios
-                        system("pause");
-                        break;
-                    }
-                            // ------------------- Opcion 3: Cotizador -------------------
-                    case '3': {
-
-                        sistemaCotizador();
-                        system("pause");
-                        break;
-                    }
-                            // ------------------- Opcion 4: Realizar pagos ----------------
-                    case '4': {
-
-                        system("pause");
-                        break;
-                    }
-                            // ------------------- Opcion 5: Ver seguimiento de envio ----------------
-                    case '5': {
-
-                        system("pause");
-                        break;
-                    }
-                            // ------------------- Opcion 6: Salir -------------------
-                    case '6':
-                        cout << "Saliendo del menu de clientes..." << endl;
-                        break;
-                    case 27:
-                        cout << "Volviendo al menu principal..." << endl;
-                        salirUser = true;
-                        break;
-                    default:
-                        cout << "Opcione no validada. Intente de nuevo" << endl;
-                        system("pause");
-                        break;
-                    }
-                }
-
-            }
-            else
-            {
-                cout << "Correo o contrasenia incorrectos. Vuelva a intentar\n";
-            }
-
-            system("pause");
-            break;
-        }
-                // ------------------- Opción 2: Registro Cliente -------------------
-        case '2': {
-
-            cout << "\n--- REGISTRO DE CLIENTE ---\n";
-
-            // Cancelar el ingreso presionando ESC
-            if (!funcionSalida("Nombres: ", n)) { break; }
-            if (!funcionSalida("Apellido: ", a)) { break; }
-            if (!funcionSalida("DNI: ", d)) { break; }
-            if (!funcionSalida("Pais: ", p)) { break; }
-            if (!funcionSalida("Correo: ", c)) { break; }
-            if (!funcionSalida("Contrasenia: ", pass)) { break; }
-
-            Cliente nuevo(n, a, d, p, c, pass);
-            listaClientes.insertar(nuevo);
-            listaClientes.guardarClientes("clientes.dat");
+		case 1: {
+			Paquete<double> paquete1(1, "Celular", 10.25, "15x15x6 cm",
+				"registrado",101, 102, 1, 2, "01-10-2025", "05-10-2025");
+			sistema.registrarPaquete(paquete1);
+			break;
+		}
+		case 2: {
+			Pago<string> pago1("Celular",1, 150.5);
+			pago1.metodo.PagoEfectivo();
+			sistema.registrarPago(pago1);
+			break;
+		}
+		case 3: {
+			sistema.mostrarPaquetes();
+			sistema.mostrarPagos();
+			system("pause");
+			system("cls");
+			break;
+		}
+		case 4:{
+			sistema.estadoPaquete(1);
+			system("pause");
+			system("cls");
+			break;
+		}
+		case 5: {
+			sistema.actualizarEstadoPaquete(1,"Entregado");
+			sistema.estadoPaquete(1);
+			system("pause");
+			system("cls");
+			break;
+		}
+		case 6:
+			sistema.guardandoPagos("pagos.dat");
+			sistema.cargandoPagos("pagos.dat");
+			system("pause");
+			system("cls");
+			break;
+		case 7:
+			cout << "Saliendo del programa...." << endl;
+			break;
+		}
+	
+	} while (opcion != 7);
 
             cout << "Registro exitoso\n";
             system("pause");

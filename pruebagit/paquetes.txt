@@ -31,3 +31,19 @@ Fecha Envio:
 Fecha Entrega Est:  
 ================================
 
+================================
+         DATOS DEL PAQUETE      
+================================
+ID:                 123
+Descripcion:        celular
+Peso:               12.000000 kg
+Dimensiones:        12 12 12
+Estado:             Nuevo
+Remitente ID:       123
+Destinatario ID:    1234
+Sucursal Origen:    1
+Sucursal Destino:   2
+Fecha Envio:        01102025
+Fecha Entrega Est:  16102025
+================================
+
