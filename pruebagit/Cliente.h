@@ -13,7 +13,7 @@ public:
         pais(p), correo(c), contrasena(pass) {
     }
 
-	int getID() const { return id; }
+    int getID() const { return id; }
     string getCorreo() const { return correo; }
     string getPassword() const { return contrasena; }
 
@@ -46,7 +46,7 @@ public:
 
         return nuevoID;
     }
-    
+
     void mostrar() {
         cout << "ID: " << id
             << "Cliente: " << nombres << " " << apellidos
@@ -59,15 +59,13 @@ public:
             << pais << "|" << correo << "|" << contrasena << "\n";
     }
 
-    bool leerArchivoCliente(ifstream& archivo) {
-		string linea;
-        if (getline(archivo, linea)) {
-            return false;
-		}
-		if (linea.empty()) return false;
+    bool leerArchivoCliente(const string& linea) {
+
         stringstream ss(linea);
         string campo;
-        getline(ss, campo, '|'); id = stoi(campo);
+
+        getline(ss, campo, '|');
+        id = stoi(campo);
         getline(ss, nombres, '|');
         getline(ss, apellidos, '|');
         getline(ss, dni, '|');
@@ -75,8 +73,7 @@ public:
         getline(ss, correo, '|');
         getline(ss, contrasena, '|');
         return true;
-
-	}       
+    }
 
 };
 
@@ -117,7 +114,7 @@ public:
             temp = temp->siguiente;
         }
         return nullptr;
-	}
+    }
 
     T* buscarPorCorreo(const string& correo) {
         NodoCliente<T>* temp = cabeza;
@@ -128,7 +125,7 @@ public:
             temp = temp->siguiente;
         }
         return nullptr;
-	}
+    }
 
     void guardarClientes(const string& nombreArchivo) const {
         ofstream out(nombreArchivo, ios::app);
@@ -154,7 +151,7 @@ public:
         string linea;
         while (getline(in, linea)) {
             T cliente;
-            if (cliente.leerArchivoCliente(in)) {
+            if (cliente.leerArchivoCliente(linea)) {
                 insertar(cliente);
             }
         }

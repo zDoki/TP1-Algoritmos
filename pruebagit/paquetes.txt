@@ -2,48 +2,10 @@
 ================================
          DATOS DEL PAQUETE      
 ================================
-ID:                 00011
-Descripcion:        Juguete
-Peso:               12.0000 kg
-Dimensiones:        1232
-Estado:             nuevo
-Remitente ID:       00001
-Destinatario ID:    00012
-Sucursal Origen:    San Isidro
-Sucursal Destino:   San Borja
-Fecha Envio:        1-10-2025
-Fecha Entrega Est:  5-10-2025
-================================
-
-================================
-         DATOS DEL PAQUETE      
-================================
-ID:                 0
-Descripcion:        
-Peso:               0.000000 kg
-Dimensiones:        
-Estado:             
-Remitente ID:       821469152
-Destinatario ID:    909764656
-Sucursal Origen:    0
-Sucursal Destino:   0
-Fecha Envio:        
-Fecha Entrega Est:  
-================================
-
-================================
-         DATOS DEL PAQUETE      
-================================
-ID:                 123
-Descripcion:        celular
-Peso:               12.000000 kg
-Dimensiones:        12 12 12
-Estado:             Nuevo
-Remitente ID:       123
-Destinatario ID:    1234
-Sucursal Origen:    1
-Sucursal Destino:   2
-Fecha Envio:        01102025
-Fecha Entrega Est:  16102025
+ID:                 569
+Descripcion:        Lapiz
+Peso:               1.000000 kg
+Sucursal Origen:    lima
+Sucursal Destino:   lima
 ================================
 

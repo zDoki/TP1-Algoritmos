@@ -56,7 +56,7 @@ void pruebaBoleta() {
     Boleta<string> boleta1(numBol, pago1);
     boleta1.guardarArchivoTexto(archivoBoletas);
 
-    // Cargar la última boleta guardada en archivo en una nueva instancia
+    // Cargar la ï¿½ltima boleta guardada en archivo en una nueva instancia
     Boleta<string> boletaCargada;
     boletaCargada.cargarArchivoTexto(archivoBoletas);
 
@@ -139,7 +139,6 @@ void sistemaRegistroPaquetes() {
 
     string descripcion, sedeOrigen, destino, input;
     double peso = 0.0;
-    int remitenteId = 0, destinatarioId = 0;
     char tecla;
 
     bool salir = false;
@@ -161,28 +160,10 @@ void sistemaRegistroPaquetes() {
 
         if (!funcionSalida("Destino: ", destino)) { break; }
         
-        if (!funcionSalida("ID Destinatario: ", input)) { break; }
-		destinatarioId = stoi(input);
-       
-		Cliente* destinatario = listaClientes.buscarPorID(destinatarioId);
+     
 
-        if (destinatario == nullptr) {
-			cout << "\nEl destinatario no se encontro, debe estar registrado" << endl;
-            system("pause");
-            continue;
-        }
-
-        if (!funcionSalida("ID Remitente: ", input)) { break; }
-		remitenteId = stoi(input);
-
-        if (remitenteId == destinatarioId) {
-            cout << "\nEl ID del remitente no se ha encontrado." << endl;
-            system("pause");
-            continue;
-        }
-
-        Paquete<string> nuevoPaquete(descripcion, peso, remitenteId,
-            destinatarioId, sedeOrigen, destino);
+        Paquete<string> nuevoPaquete(descripcion, peso,
+             sedeOrigen, destino);
 
         pilaPaquetes.push(nuevoPaquete);
         pilaPaquetes.guardarPaqueteEnArchivo(nuevoPaquete, "paquetes.txt");
@@ -333,6 +314,8 @@ int main() {
     sistemaInicioSesion();
     //pruebaBoleta();
     //sistemaPagos();
+	//sistemaRegistroPaquetes();
+
 
     return 0;
 }

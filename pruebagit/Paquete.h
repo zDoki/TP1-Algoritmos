@@ -6,20 +6,18 @@ public:
 	int id;
 	string descripcion;
 	double peso;
-	int remitenteId;
-	int destinatarioId;
+	
 	string sedeOrigen;
 	string destino;
 
 	Paquete(string _descripcion = "", double _peso = 0.0,
-		int _remitenteId = 0, int _destinatarioId = 0, string _sedeOrigen = "",
-		string _destino = "") :	descripcion(_descripcion), peso(_peso),
-		remitenteId(_remitenteId), destinatarioId(_destinatarioId),
-		sedeOrigen(_sedeOrigen), destino(_destino) 
+		  string _sedeOrigen = "",
+		string _destino = "") : descripcion(_descripcion), peso(_peso),
+		sedeOrigen(_sedeOrigen), destino(_destino)
 	{
 		id = generarIDUnico("paquetes.txt");
 	}
-	
+
 	static int generarIDUnico(const string& archivo) {
 		int nuevoID;
 		bool repetido;
@@ -38,9 +36,19 @@ public:
 				stringstream ss(linea);
 				string campo;
 				getline(ss, campo, '|'); // Leer el primer campo (ID)
-				if (stoi(campo) == nuevoID) {
-					repetido = true;
-					break;
+
+				// Validar que el campo no esté vacío antes de convertir
+				if (!campo.empty()) {
+					try {
+						if (stoi(campo) == nuevoID) {
+							repetido = true;
+							break;
+						}
+					}
+					catch (...) {
+						// Ignorar líneas con formato inválido
+						continue;
+					}
 				}
 			}
 			in.close();
@@ -53,21 +61,14 @@ public:
 	void mostrarInfoPaquete() const {
 
 		cout << "ID " << id << endl;
-		cout << "Descripsion " << descripcion << endl;
+		cout << "Descripcion " << descripcion << endl;
 		cout << "Peso " << peso << endl;
-		cout << "Remitente ID " << remitenteId << endl;
-		cout << "Destinatario ID " << destinatarioId << endl;
 		cout << "Sucursal Origen " << sedeOrigen << endl;
 		cout << "Sucursal Destino " << destino << endl;
 
 	}
 
-	string toString()const {
-		return to_string(id) + "|" + descripcion + "|" + to_string(peso) + "|" +
-			to_string(remitenteId) + "|" +
-			to_string(destinatarioId) + "|" + to_string(sedeOrigen) + "|" +
-			to_string(destino);
-	}
+
 
 	string toStringFormato() const {
 		string resultado = "";
@@ -77,8 +78,6 @@ public:
 		resultado += "ID:                 " + to_string(id) + "\n";
 		resultado += "Descripcion:        " + descripcion + "\n";
 		resultado += "Peso:               " + to_string(peso) + " kg\n";
-		resultado += "Remitente ID:       " + to_string(remitenteId) + "\n";
-		resultado += "Destinatario ID:    " + to_string(destinatarioId) + "\n";
 		resultado += "Sucursal Origen:    " + sedeOrigen + "\n";
 		resultado += "Sucursal Destino:   " + destino + "\n";
 
@@ -88,7 +87,7 @@ public:
 
 	bool leerDesdeArchivo(ifstream& archivo) {
 		string linea;
-		if (!getline(archivo, linea)) return false; //
+		if (!getline(archivo, linea)) return false;
 
 		if (linea.empty()) return false;
 
@@ -96,15 +95,24 @@ public:
 		stringstream ss(linea);
 		string campo;
 
-		getline(ss, campo, '|'); id = stoi(campo);
-		getline(ss, descripcion, '|');
-		getline(ss, campo, '|'); peso = stod(campo);
-		getline(ss, campo, '|'); remitenteId = stoi(campo);
-		getline(ss, campo, '|'); destinatarioId = stoi(campo);
-		getline(ss, campo, '|'); sedeOrigen = stoi(campo);
-		getline(ss, campo, '|'); destino = stoi(campo);
+		try {
+			getline(ss, campo, '|');
+			if (!campo.empty()) id = stoi(campo);
 
-		return true;
+			getline(ss, descripcion, '|');
+
+			getline(ss, campo, '|');
+			if (!campo.empty()) peso = stod(campo);
+
+			
+			getline(ss, sedeOrigen, '|');  // CORREGIDO: Ya no usa stoi
+			getline(ss, destino, '|');      // CORREGIDO: Ya no usa stoi
+
+			return true;
+		}
+		catch (...) {
+			return false;
+		}
 	}
 
 
