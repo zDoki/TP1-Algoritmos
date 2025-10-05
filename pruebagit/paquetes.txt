@@ -19,3 +19,23 @@ Sucursal Origen:    Lima
 Sucursal Destino:   LIMA
 ================================
 
+================================
+         DATOS DEL PAQUETE      
+================================
+ID:                 275
+Descripcion:        Cosas
+Peso:               2.000000 kg
+Sucursal Origen:    lince
+Sucursal Destino:   san isidro
+================================
+
+================================
+         DATOS DEL PAQUETE      
+================================
+ID:                 1080
+Descripcion:        
+Peso:               0.500000 kg
+Sucursal Origen:    lince
+Sucursal Destino:   sjl
+================================
+
