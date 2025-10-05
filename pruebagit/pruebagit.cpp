@@ -5,6 +5,7 @@
 #include "Tranporte.h"
 #include "PilaPaquete.h"
 #include "Paquete.h"
+#include"ColaPago.h"
 
 
 // funciones adicionales para el sistema
@@ -42,28 +43,42 @@ bool funcionSalida(const string& mensaje, string& entrada) {
 
 void pruebaBoleta() {
     GestorPago<Pago<string>> gestorPagos;
+    ColaPago<Pago<string>> cola;
     string archivoBoletas = "boleta.txt";
 
     srand((unsigned)time(0));
 
-    // Crear pago de prueba
-    Pago<string> pago1("celular", 2, 150.0);
-    pago1.metodo.PagoYape();
+    Pago<string> pago1("jugete", 1, 25.5);
+    pago1.metodo.PagoTarjeta();
     gestorPagos.registrarPago(pago1);
+    cola.encolar(pago1);
+
+    Pago<string> pago2("ROPA", 2, 15.5);
+    pago1.metodo.PagoTarjeta();
+    gestorPagos.registrarPago(pago2);
+    cola.encolar(pago2);
+
+
+
+    cola.mostrarCola();
+
+    cout << endl;
 
     // Crear boleta y guardarla
     string numBol = "B" + to_string(rand() % 10) + "OVS-" + to_string(rand() % 1000);
     Boleta<string> boleta1(numBol, pago1);
     boleta1.guardarArchivoTexto(archivoBoletas);
 
-    // Cargar la �ltima boleta guardada en archivo en una nueva instancia
+    // Cargar la última boleta guardada en archivo en una nueva instancia
     Boleta<string> boletaCargada;
     boletaCargada.cargarArchivoTexto(archivoBoletas);
 
     // Mostrar boleta cargada
     boletaCargada.mostrarBoleta();
-
     system("pause");
+
+
+
 }
 
 // almacenamiento de Menus del sistema
@@ -311,8 +326,8 @@ void sistemaInicioSesion() {
 int main() {
 	srand(time(0));
     
-    sistemaInicioSesion();
-    //pruebaBoleta();
+    //sistemaInicioSesion();
+    pruebaBoleta();
     //sistemaPagos();
 	//sistemaRegistroPaquetes();
 

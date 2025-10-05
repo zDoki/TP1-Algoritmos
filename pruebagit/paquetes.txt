@@ -9,3 +9,13 @@ Sucursal Origen:    lima
 Sucursal Destino:   lima
 ================================
 
+================================
+         DATOS DEL PAQUETE      
+================================
+ID:                 1053
+Descripcion:        Pantalla
+Peso:               4.000000 kg
+Sucursal Origen:    Lima
+Sucursal Destino:   LIMA
+================================
+

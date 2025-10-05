@@ -1,7 +1,7 @@
 #pragma once
 #include "Librerias.h"
 
-// ------------------- Función de cálculo de precio -------------------
+// ------------------- Funciï¿½n de cï¿½lculo de precio -------------------
 int calcularPrecio(string depOrigen, string depDestino, int peso) {
     int precioDepartamento = 0, precioPeso = 0;
 

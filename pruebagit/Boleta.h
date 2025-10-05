@@ -66,7 +66,7 @@ public:
 		in.close();
 
 		if (ultima.empty()) {
-			cout << "El archivo de boletas está vacío.\n";
+			cout << "El archivo de boletas estï¿½ vacï¿½o.\n";
 			return;
 		}
 
@@ -76,11 +76,11 @@ public:
 		if (!getline(ss, numeroBoleta, '|') ||
 			!getline(ss, fechaEmision, '|') ||
 			!getline(ss, pagoStr)) {
-			cout << "Formato de boleta inválido en el archivo.\n";
+			cout << "Formato de boleta invï¿½lido en el archivo.\n";
 			return;
 		}
 
-		// Delego el parseo de pago al método del Pago (debe aceptar "producto;cantidad;precio;metodo")
+		// Delego el parseo de pago al mï¿½todo del Pago (debe aceptar "producto;cantidad;precio;metodo")
 		pagoAsociado.cargarPagoTexto(pagoStr);
 	}
 

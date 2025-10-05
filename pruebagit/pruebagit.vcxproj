@@ -128,6 +128,7 @@
   <ItemGroup>
     <ClInclude Include="Boleta.h" />
     <ClInclude Include="Cliente.h" />
+    <ClInclude Include="ColaPago.h" />
     <ClInclude Include="NodoCliente.h" />
     <ClInclude Include="NodoPago.h" />
     <ClInclude Include="Librerias.h" />
