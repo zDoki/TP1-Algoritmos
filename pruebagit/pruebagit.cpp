@@ -138,31 +138,25 @@ void agregarPaquete(int clienteID) {
     if (!funcionSalida("Sede de Origen: ", sedeOrigen)) return;
     if (!funcionSalida("Sede de Destino: ", destino)) return;
 
-    Paquete<string> nuevoPaquete(descripcion, peso, sedeOrigen, destino);
+    // MODIFICADO: Pasar el clienteID al crear el paquete
+    Paquete<string> nuevoPaquete(descripcion, peso, sedeOrigen, destino, clienteID);
     pilaPaquetes.push(nuevoPaquete);
     pilaPaquetes.guardarPaqueteEnArchivo(nuevoPaquete, "paquetes.txt");
 
     cout << "\n========================================\n";
     cout << "  PAQUETE REGISTRADO EXITOSAMENTE!\n";
     cout << "  ID del Paquete: " << nuevoPaquete.id << "\n";
+    cout << "  ID del Cliente: " << nuevoPaquete.clienteID << "\n";
     cout << "========================================\n";
     system("pause");
 }
 
-void verMisPaquetes() {
+void verMisPaquetes(int clienteID) {
     system("cls");
-    cout << "========================================\n";
-    cout << "         MIS PAQUETES                   \n";
-    cout << "========================================\n";
 
-    if (pilaPaquetes.estaVacia()) {
-        cout << "\nNo tiene paquetes registrados.\n";
-    }
-    else {
-        pilaPaquetes.mostrarTodos();
-    }
+    // Usar el método que lee desde archivo y filtra por cliente
+    pilaPaquetes.mostrarPaquetesDeCliente("paquetes.txt", clienteID);
 
-    cout << "\n========================================\n";
     system("pause");
 }
 
@@ -239,7 +233,7 @@ void realizarPago() {
 
     colaPagos.encolar(nuevoPago);
 
-    // Generar boleta
+  
     string numBoleta = "B" + to_string(rand() % 10) + "OVS-" + to_string(rand() % 1000);
     Boleta<string> boleta(numBoleta, nuevoPago);
     boleta.guardarArchivoTexto("boleta.txt");
@@ -260,7 +254,6 @@ void ordenarPaquetesPorPeso() {
     cout << "========================================\n";
     cout << "Leyendo paquetes desde paquetes.txt...\n\n";
 
-    // Leer paquetes desde el archivo
     ifstream archivo("paquetes.txt");
     if (!archivo.is_open()) {
         cout << "\nError: No se pudo abrir el archivo paquetes.txt\n";
@@ -272,68 +265,35 @@ void ordenarPaquetesPorPeso() {
     vector<Paquete<string>> paquetes;
     string linea;
 
-    // Leer todas las líneas del archivo
+  
     while (getline(archivo, linea)) {
-        // Buscar líneas que contienen ID (formato: "ID:                 569")
-        if (linea.find("ID:") != string::npos) {
-            Paquete<string> paq;
+        if (linea.empty()) continue;
 
-            // Extraer ID
-            size_t posID = linea.find("ID:") + 20;
-            string idStr = linea.substr(posID);
-            idStr.erase(0, idStr.find_first_not_of(" \t"));
-            idStr.erase(idStr.find_last_not_of(" \t\n\r") + 1);
+        stringstream ss(linea);
+        string campo;
+        Paquete<string> paq;
 
-            try {
-                paq.id = stoi(idStr);
-            }
-            catch (...) {
-                continue; // Si falla, ignorar este paquete
-            }
+        try {
+            getline(ss, campo, '|');
+            paq.id = stoi(campo);
 
-            // Leer descripción
-            if (getline(archivo, linea) && linea.find("Descripcion:") != string::npos) {
-                size_t pos = linea.find("Descripcion:") + 20;
-                paq.descripcion = linea.substr(pos);
-                paq.descripcion.erase(0, paq.descripcion.find_first_not_of(" \t"));
-                paq.descripcion.erase(paq.descripcion.find_last_not_of(" \t\n\r") + 1);
-            }
+            getline(ss, campo, '|');
+            paq.clienteID = stoi(campo);
 
-            // Leer peso
-            if (getline(archivo, linea) && linea.find("Peso:") != string::npos) {
-                size_t pos = linea.find("Peso:") + 20;
-                string pesoStr = linea.substr(pos);
-                pesoStr = pesoStr.substr(0, pesoStr.find(" kg"));
-                pesoStr.erase(0, pesoStr.find_first_not_of(" \t"));
+            getline(ss, paq.descripcion, '|');
 
-                try {
-                    paq.peso = stod(pesoStr);
-                }
-                catch (...) {
-                    paq.peso = 0.0;
-                }
-            }
+            getline(ss, campo, '|');
+            paq.peso = stod(campo);
 
-            // Leer sede origen
-            if (getline(archivo, linea) && linea.find("Sucursal Origen:") != string::npos) {
-                size_t pos = linea.find("Sucursal Origen:") + 20;
-                paq.sedeOrigen = linea.substr(pos);
-                paq.sedeOrigen.erase(0, paq.sedeOrigen.find_first_not_of(" \t"));
-                paq.sedeOrigen.erase(paq.sedeOrigen.find_last_not_of(" \t\n\r") + 1);
-            }
+            getline(ss, paq.sedeOrigen, '|');
+            getline(ss, paq.destino, '|');
 
-            // Leer sede destino
-            if (getline(archivo, linea) && linea.find("Sucursal Destino:") != string::npos) {
-                size_t pos = linea.find("Sucursal Destino:") + 20;
-                paq.destino = linea.substr(pos);
-                paq.destino.erase(0, paq.destino.find_first_not_of(" \t"));
-                paq.destino.erase(paq.destino.find_last_not_of(" \t\n\r") + 1);
-            }
-
-            // Agregar paquete al vector si tiene datos válidos
             if (paq.id > 0 && paq.peso > 0) {
                 paquetes.push_back(paq);
             }
+        }
+        catch (...) {
+            continue;
         }
     }
     archivo.close();
@@ -366,7 +326,6 @@ void ordenarPaquetesPorPeso() {
         if (!intercambio) break;
     }
 
-    // Mostrar paquetes ordenados
     cout << "========================================\n";
     cout << "   PAQUETES ORDENADOS POR PESO         \n";
     cout << "   (Menor a Mayor)                     \n";
@@ -374,7 +333,8 @@ void ordenarPaquetesPorPeso() {
 
     for (size_t i = 0; i < paquetes.size(); i++) {
         cout << "Posicion #" << (i + 1) << "\n";
-        cout << "  ID:          " << paquetes[i].id << "\n";
+        cout << "  ID Paquete:  " << paquetes[i].id << "\n";
+        cout << "  ID Cliente:  " << paquetes[i].clienteID << "\n";
         cout << "  Descripcion: " << paquetes[i].descripcion << "\n";
         cout << "  Peso:        " << fixed << setprecision(2) << paquetes[i].peso << " kg\n";
         cout << "  Ruta:        " << paquetes[i].sedeOrigen << " -> " << paquetes[i].destino << "\n";
@@ -397,107 +357,70 @@ void mostrarTodosPaquetes() {
     cout << "========================================\n";
     cout << "Leyendo paquetes desde paquetes.txt...\n\n";
 
-    // Leer paquetes desde el archivo
     ifstream archivo("paquetes.txt");
     if (!archivo.is_open()) {
         cout << "\nError: No se pudo abrir el archivo paquetes.txt\n";
-        cout << "Verifique que el archivo existe.\n";
         system("pause");
         return;
     }
 
-    vector<Paquete<string>> paquetes;
-    string linea;
-
-    // Leer todas las líneas del archivo
-    while (getline(archivo, linea)) {
-        // Buscar líneas que contienen ID
-        if (linea.find("ID:") != string::npos) {
-            Paquete<string> paq;
-
-            // Extraer ID
-            size_t posID = linea.find("ID:") + 20;
-            string idStr = linea.substr(posID);
-            idStr.erase(0, idStr.find_first_not_of(" \t"));
-            idStr.erase(idStr.find_last_not_of(" \t\n\r") + 1);
-
-            try {
-                paq.id = stoi(idStr);
-            }
-            catch (...) {
-                continue;
-            }
-
-            // Leer descripción
-            if (getline(archivo, linea) && linea.find("Descripcion:") != string::npos) {
-                size_t pos = linea.find("Descripcion:") + 20;
-                paq.descripcion = linea.substr(pos);
-                paq.descripcion.erase(0, paq.descripcion.find_first_not_of(" \t"));
-                paq.descripcion.erase(paq.descripcion.find_last_not_of(" \t\n\r") + 1);
-            }
-
-            // Leer peso
-            if (getline(archivo, linea) && linea.find("Peso:") != string::npos) {
-                size_t pos = linea.find("Peso:") + 20;
-                string pesoStr = linea.substr(pos);
-                pesoStr = pesoStr.substr(0, pesoStr.find(" kg"));
-                pesoStr.erase(0, pesoStr.find_first_not_of(" \t"));
-
-                try {
-                    paq.peso = stod(pesoStr);
-                }
-                catch (...) {
-                    paq.peso = 0.0;
-                }
-            }
-
-            // Leer sede origen
-            if (getline(archivo, linea) && linea.find("Sucursal Origen:") != string::npos) {
-                size_t pos = linea.find("Sucursal Origen:") + 20;
-                paq.sedeOrigen = linea.substr(pos);
-                paq.sedeOrigen.erase(0, paq.sedeOrigen.find_first_not_of(" \t"));
-                paq.sedeOrigen.erase(paq.sedeOrigen.find_last_not_of(" \t\n\r") + 1);
-            }
-
-            // Leer sede destino
-            if (getline(archivo, linea) && linea.find("Sucursal Destino:") != string::npos) {
-                size_t pos = linea.find("Sucursal Destino:") + 20;
-                paq.destino = linea.substr(pos);
-                paq.destino.erase(0, paq.destino.find_first_not_of(" \t"));
-                paq.destino.erase(paq.destino.find_last_not_of(" \t\n\r") + 1);
-            }
-
-            // Agregar paquete al vector si tiene datos válidos
-            if (paq.id > 0) {
-                paquetes.push_back(paq);
-            }
-        }
-    }
-    archivo.close();
-
-    if (paquetes.empty()) {
-        cout << "\nNo se encontraron paquetes en el archivo.\n";
-        system("pause");
-        return;
-    }
-
-    // Mostrar todos los paquetes
     cout << "========================================\n";
     cout << "      LISTADO COMPLETO DE PAQUETES     \n";
     cout << "========================================\n\n";
 
-    for (size_t i = 0; i < paquetes.size(); i++) {
-        cout << "Paquete #" << (i + 1) << "\n";
-        cout << "----------------------------------------\n";
-        cout << "  ID:          " << paquetes[i].id << "\n";
-        cout << "  Descripcion: " << paquetes[i].descripcion << "\n";
-        cout << "  Peso:        " << fixed << setprecision(2) << paquetes[i].peso << " kg\n";
-        cout << "  Origen:      " << paquetes[i].sedeOrigen << "\n";
-        cout << "  Destino:     " << paquetes[i].destino << "\n";
-        cout << "========================================\n\n";
+    string linea;
+    bool hayPaquetes = false;
+    int contador = 1;
+
+    while (getline(archivo, linea)) {
+        if (linea.empty()) continue;
+
+        stringstream ss(linea);
+        string campo;
+        int idPaquete, idCliente;
+        string desc, origen, destino;
+        double peso;
+
+        try {
+            getline(ss, campo, '|');
+            idPaquete = stoi(campo);
+
+            getline(ss, campo, '|');
+            idCliente = stoi(campo);
+
+            getline(ss, desc, '|');
+
+            getline(ss, campo, '|');
+            peso = stod(campo);
+
+            getline(ss, origen, '|');
+            getline(ss, destino, '|');
+
+            cout << "Paquete #" << contador++ << "\n";
+            cout << "----------------------------------------\n";
+            cout << "  ID Paquete:  " << idPaquete << "\n";
+            cout << "  ID Cliente:  " << idCliente << "\n";
+            cout << "  Descripcion: " << desc << "\n";
+            cout << "  Peso:        " << fixed << setprecision(2) << peso << " kg\n";
+            cout << "  Origen:      " << origen << "\n";
+            cout << "  Destino:     " << destino << "\n";
+            cout << "========================================\n\n";
+            hayPaquetes = true;
+        }
+        catch (...) {
+            continue;
+        }
     }
 
-    cout << "Total de paquetes registrados: " << paquetes.size() << "\n";
+    archivo.close();
+
+    if (!hayPaquetes) {
+        cout << "\nNo se encontraron paquetes en el archivo.\n";
+    }
+    else {
+        cout << "Total de paquetes: " << (contador - 1) << "\n";
+    }
+
     cout << "========================================\n";
     system("pause");
 }
@@ -568,7 +491,7 @@ void verColaPagos() {
     system("pause");
 }
 
-// ==================== SISTEMAS DE LOGIN ====================
+
 
 void sistemaUsuario() {
     char tecla;
@@ -591,6 +514,7 @@ void sistemaUsuario() {
             if (listaClientes.ingresoCuenta(correo, pass)) {
                 Cliente* clienteActual = listaClientes.buscarPorCorreo(correo);
                 string nombreCompleto = correo;
+                int clienteID = clienteActual->getID(); // OBTENER EL ID
 
                 bool salirUsuario = false;
                 while (!salirUsuario) {
@@ -599,10 +523,10 @@ void sistemaUsuario() {
 
                     switch (opcionUsuario) {
                     case '1':
-                        agregarPaquete(clienteActual->getID());
+                        agregarPaquete(clienteID); // PASAR EL ID
                         break;
                     case '2':
-                        verMisPaquetes();
+                        verMisPaquetes(clienteID); // PASAR EL ID
                         break;
                     case '3':
                         realizarPago();
@@ -625,7 +549,7 @@ void sistemaUsuario() {
             }
             break;
         }
-        case '2': { 
+        case '2': {
             system("cls");
             cout << "\n--- REGISTRO DE USUARIO ---\n";
             cout << "(Presione ESC para cancelar)\n\n";
@@ -671,7 +595,7 @@ void sistemaAdministrador() {
     if (!funcionSalida("Usuario: ", usuario)) return;
     if (!funcionSalida("Contrasena: ", contrasena)) return;
 
-    // Credenciales de administrador
+    // log in administrador
     if (usuario != "admin" || contrasena != "admin123") {
         cout << "\nCredenciales incorrectas.\n";
         system("pause");
@@ -711,12 +635,12 @@ void sistemaAdministrador() {
     }
 }
 
-// ==================== MAIN ====================
+
 
 int main() {
     srand(time(0));
 
-    // Cargar datos existentes
+   
     listaClientes.cargarClientes("clientes.txt");
     pilaPaquetes.cargarDesdeArchivo("paquetes.txt");
 

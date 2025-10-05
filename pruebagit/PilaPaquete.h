@@ -1,5 +1,5 @@
 #pragma once
-#include"NodoPila.h"
+#include "NodoPila.h"
 
 template<typename T>
 class PilaPaquete {
@@ -11,19 +11,16 @@ public:
 	}
 
 	~PilaPaquete() {
-
 		while (tope)
 		{
 			NodoPila<T>* temp = tope;
 			tope = tope->siguiente;
 			delete temp;
 		}
-
 	}
 
 	void push(T valor) {
 		NodoPila<T>* nuevo = new NodoPila<T>(valor);
-
 		nuevo->siguiente = tope;
 		tope = nuevo;
 		tamanio++;
@@ -31,7 +28,6 @@ public:
 	}
 
 	T pop() {
-
 		if (!tope)
 		{
 			cout << "Pila vacia " << endl;
@@ -45,23 +41,16 @@ public:
 		return data;
 	}
 
+	// MODIFICADO: Guardar con formato separado por |
 	void guardarPaqueteEnArchivo(T paquete, const string& nombreArchivo) {
 		ofstream archivo(nombreArchivo, ios::app);
 		if (archivo.is_open()) {
-
-			archivo.seekp(0, ios::end);
-			if (archivo.tellp() == 0) {
-				archivo << "========================================\n";
-				archivo << "      REGISTRO DE PAQUETES             \n";
-				archivo << "========================================\n\n";
-			}
-
-			archivo << paquete.toStringFormato();
+			archivo << paquete.toStringArchivo() << "\n";
 			archivo.close();
 			cout << "Paquete guardado exitosamente en " << nombreArchivo << endl;
 		}
 		else {
-			cout << "Error No se pudo abrir el archivo" << endl;
+			cout << "Error: No se pudo abrir el archivo" << endl;
 		}
 	}
 
@@ -81,14 +70,111 @@ public:
 		}
 	}
 
-	int getTamaino()const {
+	// NUEVO: Mostrar solo paquetes de un cliente específico
+	void mostrarPorCliente(int clienteID) {
+		if (!tope) {
+			cout << "No hay paquetes registrados." << endl;
+			return;
+		}
+
+		NodoPila<T>* actual = tope;
+		bool encontrado = false;
+		int contador = 1;
+
+		cout << "\n========================================\n";
+		cout << "     MIS PAQUETES REGISTRADOS          \n";
+		cout << "========================================\n\n";
+
+		while (actual) {
+			if (actual->dato.clienteID == clienteID) {
+				cout << "--- Paquete #" << contador++ << " ---\n";
+				actual->dato.mostrarInfoPaquete();
+				cout << "----------------------------------------\n";
+				encontrado = true;
+			}
+			actual = actual->siguiente;
+		}
+
+		if (!encontrado) {
+			cout << "No tiene paquetes registrados.\n";
+		}
+	}
+
+	int getTamaino() const {
 		return tamanio;
 	}
 
-	bool estaVacia()const {
+	bool estaVacia() const {
 		return tope == nullptr;
 	}
 
+	// NUEVO: Leer paquetes de un cliente desde archivo
+	void mostrarPaquetesDeCliente(const string& nombreArchivo, int clienteID) {
+		ifstream archivo(nombreArchivo);
+
+		if (!archivo.is_open()) {
+			cout << "\nNo hay paquetes registrados en el sistema." << endl;
+			return;
+		}
+
+		cout << "\n========================================\n";
+		cout << "     MIS PAQUETES REGISTRADOS          \n";
+		cout << "========================================\n\n";
+
+		string linea;
+		bool encontrado = false;
+		int contador = 1;
+
+		while (getline(archivo, linea)) {
+			if (linea.empty()) continue;
+
+			stringstream ss(linea);
+			string campo;
+			int idPaquete, idCliente;
+
+			try {
+				// Leer ID del paquete
+				getline(ss, campo, '|');
+				idPaquete = stoi(campo);
+
+				// Leer ID del cliente
+				getline(ss, campo, '|');
+				idCliente = stoi(campo);
+
+				// Si el paquete pertenece al cliente actual
+				if (idCliente == clienteID) {
+					encontrado = true;
+
+					string desc, origen, destino;
+					double peso;
+
+					getline(ss, desc, '|');
+					getline(ss, campo, '|');
+					peso = stod(campo);
+					getline(ss, origen, '|');
+					getline(ss, destino, '|');
+
+					cout << "--- Paquete #" << contador++ << " ---\n";
+					cout << "ID Paquete:      " << idPaquete << "\n";
+					cout << "Descripcion:     " << desc << "\n";
+					cout << "Peso:            " << fixed << setprecision(2) << peso << " kg\n";
+					cout << "Origen:          " << origen << "\n";
+					cout << "Destino:         " << destino << "\n";
+					cout << "----------------------------------------\n";
+				}
+			}
+			catch (...) {
+				continue;
+			}
+		}
+
+		if (!encontrado) {
+			cout << "No tiene paquetes registrados.\n";
+		}
+
+		archivo.close();
+		cout << "\n========================================\n";
+	}
 
 	void mostrarPaquetesTxt(const string& nombreArchivo) {
 		ifstream archivo(nombreArchivo);
@@ -134,6 +220,4 @@ public:
 		archivo.close();
 		cout << "Paquetes cargados desde " << nombreArchivo << endl;
 	}
-
 };
-
