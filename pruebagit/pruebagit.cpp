@@ -6,11 +6,14 @@
 #include "PilaPaquete.h"
 #include "Paquete.h"
 #include "ColaPago.h"
+#include"Librerias.h"
 
 // Variables globales del sistema
 PilaPaquete<Paquete<string>> pilaPaquetes;
 GestoCliente<Cliente> listaClientes;
 ColaPago<Pago<string>> colaPagos;
+Transporte sistemaTransporte;
+
 
 // Función auxiliar para cancelar operaciones con ESC
 bool funcionSalida(const string& mensaje, string& entrada) {
@@ -163,57 +166,67 @@ void verMisPaquetes(int clienteID) {
 void realizarPago() {
     system("cls");
     cout << "========================================\n";
-    cout << "         REALIZAR PAGO                  \n";
+    cout << "         REALIZAR PAGO DE ENVIO         \n";
     cout << "========================================\n";
     cout << "(Presione ESC para cancelar)\n\n";
 
-    string producto, cantidadStr, precioStr, metodoPago;
-    int cantidad;
-    double precioUnitario;
+    string depOrigen, depDestino, pesoStr;
+    int peso;
 
-    if (!funcionSalida("Producto/Servicio: ", producto)) return;
-    if (!funcionSalida("Cantidad: ", cantidadStr)) return;
+    // Solicitar datos del envío
+    if (!funcionSalida("Departamento de Origen: ", depOrigen)) return;
+    if (!funcionSalida("Departamento de Destino: ", depDestino)) return;
+    if (!funcionSalida("Peso del paquete (kg): ", pesoStr)) return;
 
     try {
-        cantidad = stoi(cantidadStr);
-        if (cantidad <= 0) {
-            cout << "La cantidad debe ser mayor a 0\n";
+        peso = stoi(pesoStr);
+        if (peso <= 0) {
+            cout << "El peso debe ser mayor a 0\n";
             system("pause");
             return;
         }
     }
     catch (...) {
-        cout << "Cantidad invalida\n";
+        cout << "Peso invalido\n";
         system("pause");
         return;
     }
 
-    if (!funcionSalida("Precio Unitario: ", precioStr)) return;
+    // Calcular el precio automáticamente
+    int precioTotal =sistemaTransporte.calcularPrecio(depOrigen, depDestino, peso);
 
-    try {
-        precioUnitario = stod(precioStr);
-        if (precioUnitario <= 0) {
-            cout << "El precio debe ser mayor a 0\n";
-            system("pause");
-            return;
-        }
-    }
-    catch (...) {
-        cout << "Precio invalido\n";
-        system("pause");
-        return;
-    }
+    // Mostrar resumen del cálculo
+    cout << "\n========================================\n";
+    cout << "       RESUMEN DEL ENVIO                \n";
+    cout << "========================================\n";
+    cout << " Origen:      " << depOrigen << "\n";
+    cout << " Destino:     " << depDestino << "\n";
+    cout << " Peso:        " << peso << " kg\n";
+    cout << "----------------------------------------\n";
+    cout << " COSTO TOTAL: S/ " << precioTotal << ".00\n";
+    cout << "========================================\n\n";
 
-    cout << "\nMetodos de Pago Disponibles:\n";
+    // Seleccionar método de pago
+    cout << "Metodos de Pago Disponibles:\n";
     cout << "1. Yape\n";
     cout << "2. Tarjeta\n";
     cout << "3. Efectivo\n";
-    cout << "Seleccione metodo (1-3): ";
+    cout << "4. Cancelar\n";
+    cout << "Seleccione metodo (1-4): ";
 
     char opcionPago = _getch();
     cout << opcionPago << endl;
 
-    Pago<string> nuevoPago(producto, cantidad, precioUnitario);
+    if (opcionPago == '4' || opcionPago == 27) {
+        cout << "Pago cancelado.\n";
+        system("pause");
+        return;
+    }
+
+    // Crear descripción del servicio
+    string descripcionServicio = "Envio " + depOrigen + " -> " + depDestino + " (" + to_string(peso) + " kg)";
+
+    Pago<string> nuevoPago(descripcionServicio, 1, precioTotal);
 
     switch (opcionPago) {
     case '1':
@@ -233,7 +246,7 @@ void realizarPago() {
 
     colaPagos.encolar(nuevoPago);
 
-  
+    // Generar boleta
     string numBoleta = "B" + to_string(rand() % 10) + "OVS-" + to_string(rand() % 1000);
     Boleta<string> boleta(numBoleta, nuevoPago);
     boleta.guardarArchivoTexto("boleta.txt");
@@ -265,7 +278,7 @@ void ordenarPaquetesPorPeso() {
     vector<Paquete<string>> paquetes;
     string linea;
 
-  
+    // Leer paquetes con el nuevo formato
     while (getline(archivo, linea)) {
         if (linea.empty()) continue;
 
@@ -326,6 +339,7 @@ void ordenarPaquetesPorPeso() {
         if (!intercambio) break;
     }
 
+    // Mostrar paquetes ordenados
     cout << "========================================\n";
     cout << "   PAQUETES ORDENADOS POR PESO         \n";
     cout << "   (Menor a Mayor)                     \n";
@@ -453,7 +467,7 @@ void calcularCostoEnvio() {
         return;
     }
 
-    int costo = calcularPrecio(depOrigen, depDestino, peso);
+    int costo =sistemaTransporte.calcularPrecio(depOrigen, depDestino, peso);
 
     cout << "\n========================================\n";
     cout << "       DETALLES DEL CALCULO             \n";
@@ -491,7 +505,7 @@ void verColaPagos() {
     system("pause");
 }
 
-
+// ==================== SISTEMAS DE LOGIN ====================
 
 void sistemaUsuario() {
     char tecla;
@@ -595,7 +609,7 @@ void sistemaAdministrador() {
     if (!funcionSalida("Usuario: ", usuario)) return;
     if (!funcionSalida("Contrasena: ", contrasena)) return;
 
-    // log in administrador
+    // Credenciales de administrador
     if (usuario != "admin" || contrasena != "admin123") {
         cout << "\nCredenciales incorrectas.\n";
         system("pause");
@@ -635,12 +649,12 @@ void sistemaAdministrador() {
     }
 }
 
-
+// ==================== MAIN ====================
 
 int main() {
     srand(time(0));
 
-   
+    // Cargar datos existentes
     listaClientes.cargarClientes("clientes.txt");
     pilaPaquetes.cargarDesdeArchivo("paquetes.txt");
 

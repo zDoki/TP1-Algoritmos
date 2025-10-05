@@ -4,7 +4,7 @@ template<typename T>
 class Paquete {
 public:
 	int id;
-	int clienteID;  // NUEVO: ID del cliente que creó el paquete
+	int clienteID;  
 	string descripcion;
 	double peso;
 
