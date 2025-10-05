@@ -6,14 +6,13 @@
 #include "PilaPaquete.h"
 #include "Paquete.h"
 #include "ColaPago.h"
-#include"Librerias.h"
+#include "Librerias.h"
 
 // Variables globales del sistema
 PilaPaquete<Paquete<string>> pilaPaquetes;
 GestoCliente<Cliente> listaClientes;
 ColaPago<Pago<string>> colaPagos;
 Transporte sistemaTransporte;
-
 
 // Función auxiliar para cancelar operaciones con ESC
 bool funcionSalida(const string& mensaje, string& entrada) {
@@ -102,7 +101,8 @@ void menuAdministrador() {
     cout << " [3] Calcular Costo de Envio\n";
     cout << " [4] Ver Todos los Clientes\n";
     cout << " [5] Ver Cola de Pagos\n";
-    cout << " [6] Volver al Menu Principal\n";
+    cout << " [6] Procesar Siguiente Pago\n";
+    cout << " [7] Volver al Menu Principal\n";
     cout << "========================================\n";
     cout << " Presione ESC para volver\n";
     cout << "----------------------------------------\n";
@@ -141,7 +141,6 @@ void agregarPaquete(int clienteID) {
     if (!funcionSalida("Sede de Origen: ", sedeOrigen)) return;
     if (!funcionSalida("Sede de Destino: ", destino)) return;
 
-    // MODIFICADO: Pasar el clienteID al crear el paquete
     Paquete<string> nuevoPaquete(descripcion, peso, sedeOrigen, destino, clienteID);
     pilaPaquetes.push(nuevoPaquete);
     pilaPaquetes.guardarPaqueteEnArchivo(nuevoPaquete, "paquetes.txt");
@@ -156,10 +155,7 @@ void agregarPaquete(int clienteID) {
 
 void verMisPaquetes(int clienteID) {
     system("cls");
-
-    // Usar el método que lee desde archivo y filtra por cliente
     pilaPaquetes.mostrarPaquetesDeCliente("paquetes.txt", clienteID);
-
     system("pause");
 }
 
@@ -173,7 +169,6 @@ void realizarPago() {
     string depOrigen, depDestino, pesoStr;
     int peso;
 
-    // Solicitar datos del envío
     if (!funcionSalida("Departamento de Origen: ", depOrigen)) return;
     if (!funcionSalida("Departamento de Destino: ", depDestino)) return;
     if (!funcionSalida("Peso del paquete (kg): ", pesoStr)) return;
@@ -192,10 +187,8 @@ void realizarPago() {
         return;
     }
 
-    // Calcular el precio automáticamente
-    int precioTotal =sistemaTransporte.calcularPrecio(depOrigen, depDestino, peso);
+    int precioTotal = sistemaTransporte.calcularPrecio(depOrigen, depDestino, peso);
 
-    // Mostrar resumen del cálculo
     cout << "\n========================================\n";
     cout << "       RESUMEN DEL ENVIO                \n";
     cout << "========================================\n";
@@ -206,7 +199,6 @@ void realizarPago() {
     cout << " COSTO TOTAL: S/ " << precioTotal << ".00\n";
     cout << "========================================\n\n";
 
-    // Seleccionar método de pago
     cout << "Metodos de Pago Disponibles:\n";
     cout << "1. Yape\n";
     cout << "2. Tarjeta\n";
@@ -223,9 +215,7 @@ void realizarPago() {
         return;
     }
 
-    // Crear descripción del servicio
     string descripcionServicio = "Envio " + depOrigen + " -> " + depDestino + " (" + to_string(peso) + " kg)";
-
     Pago<string> nuevoPago(descripcionServicio, 1, precioTotal);
 
     switch (opcionPago) {
@@ -244,7 +234,18 @@ void realizarPago() {
         return;
     }
 
+    // Encolar el pago
     colaPagos.encolar(nuevoPago);
+
+    // Guardar en archivo de pagos pendientes
+    ofstream archivoPagos("pagos_pendientes.txt", ios::app);
+    if (archivoPagos.is_open()) {
+        archivoPagos << nuevoPago.getProducto() << "|"
+            << nuevoPago.getCantidad() << "|"
+            << fixed << setprecision(2) << nuevoPago.getPrecioUnitario() << "|"
+            << nuevoPago.metodo.getTipoPago() << "\n";
+        archivoPagos.close();
+    }
 
     // Generar boleta
     string numBoleta = "B" + to_string(rand() % 10) + "OVS-" + to_string(rand() % 1000);
@@ -255,6 +256,9 @@ void realizarPago() {
     cout << "       PAGO PROCESADO EXITOSAMENTE      \n";
     cout << "========================================\n";
     boleta.mostrarBoleta();
+
+    cout << "\nEl pago ha sido agregado a la cola de pagos pendientes.\n";
+    cout << "Pagos en cola: " << colaPagos.contarElementos() << "\n";
     system("pause");
 }
 
@@ -270,7 +274,6 @@ void ordenarPaquetesPorPeso() {
     ifstream archivo("paquetes.txt");
     if (!archivo.is_open()) {
         cout << "\nError: No se pudo abrir el archivo paquetes.txt\n";
-        cout << "Verifique que el archivo existe.\n";
         system("pause");
         return;
     }
@@ -278,7 +281,6 @@ void ordenarPaquetesPorPeso() {
     vector<Paquete<string>> paquetes;
     string linea;
 
-    // Leer paquetes con el nuevo formato
     while (getline(archivo, linea)) {
         if (linea.empty()) continue;
 
@@ -339,7 +341,6 @@ void ordenarPaquetesPorPeso() {
         if (!intercambio) break;
     }
 
-    // Mostrar paquetes ordenados
     cout << "========================================\n";
     cout << "   PAQUETES ORDENADOS POR PESO         \n";
     cout << "   (Menor a Mayor)                     \n";
@@ -369,7 +370,6 @@ void mostrarTodosPaquetes() {
     cout << "========================================\n";
     cout << "       TODOS LOS PAQUETES               \n";
     cout << "========================================\n";
-    cout << "Leyendo paquetes desde paquetes.txt...\n\n";
 
     ifstream archivo("paquetes.txt");
     if (!archivo.is_open()) {
@@ -377,10 +377,6 @@ void mostrarTodosPaquetes() {
         system("pause");
         return;
     }
-
-    cout << "========================================\n";
-    cout << "      LISTADO COMPLETO DE PAQUETES     \n";
-    cout << "========================================\n\n";
 
     string linea;
     bool hayPaquetes = false;
@@ -467,7 +463,7 @@ void calcularCostoEnvio() {
         return;
     }
 
-    int costo =sistemaTransporte.calcularPrecio(depOrigen, depDestino, peso);
+    int costo = sistemaTransporte.calcularPrecio(depOrigen, depDestino, peso);
 
     cout << "\n========================================\n";
     cout << "       DETALLES DEL CALCULO             \n";
@@ -485,7 +481,7 @@ void verTodosClientes() {
     system("cls");
     cout << "========================================\n";
     cout << "       LISTA DE CLIENTES                \n";
-    cout << "========================================\n";
+    cout << "========================================\n\n";
 
     listaClientes.mostrar();
 
@@ -495,13 +491,60 @@ void verTodosClientes() {
 
 void verColaPagos() {
     system("cls");
-    cout << "========================================\n";
-    cout << "       COLA DE PAGOS PENDIENTES         \n";
-    cout << "========================================\n";
-
     colaPagos.mostrarCola();
+    cout << "\nPagos totales en cola: " << colaPagos.contarElementos() << "\n";
+    system("pause");
+}
 
-    cout << "\n========================================\n";
+void procesarSiguientePago() {
+    system("cls");
+    cout << "========================================\n";
+    cout << "      PROCESAR SIGUIENTE PAGO           \n";
+    cout << "========================================\n\n";
+
+    if (colaPagos.estaVacia()) {
+        cout << "No hay pagos pendientes para procesar.\n";
+        system("pause");
+        return;
+    }
+
+    cout << "Procesando el siguiente pago de la cola...\n\n";
+
+    // El desencolar elimina el primer elemento
+    bool procesado = colaPagos.desencolar();
+
+    if (procesado) {
+        cout << "========================================\n";
+        cout << "  PAGO PROCESADO EXITOSAMENTE          \n";
+        cout << "========================================\n";
+        cout << "El pago ha sido retirado de la cola.\n";
+        cout << "Pagos restantes en cola: " << colaPagos.contarElementos() << "\n";
+
+        // Actualizar archivo de pagos pendientes
+        ofstream temp("pagos_temp.txt");
+        ifstream original("pagos_pendientes.txt");
+
+        if (original.is_open() && temp.is_open()) {
+            string linea;
+            bool primera = true;
+            while (getline(original, linea)) {
+                if (primera) {
+                    primera = false;
+                    continue; // Saltar la primera línea (ya procesada)
+                }
+                temp << linea << "\n";
+            }
+            original.close();
+            temp.close();
+
+            remove("pagos_pendientes.txt");
+            rename("pagos_temp.txt", "pagos_pendientes.txt");
+        }
+    }
+    else {
+        cout << "Error al procesar el pago.\n";
+    }
+
     system("pause");
 }
 
@@ -516,7 +559,7 @@ void sistemaUsuario() {
         tecla = _getch();
 
         switch (tecla) {
-        case '1': { // Iniciar Sesión
+        case '1': {
             system("cls");
             cout << "\n--- INICIAR SESION ---\n";
             cout << "(Presione ESC para cancelar)\n\n";
@@ -528,7 +571,7 @@ void sistemaUsuario() {
             if (listaClientes.ingresoCuenta(correo, pass)) {
                 Cliente* clienteActual = listaClientes.buscarPorCorreo(correo);
                 string nombreCompleto = correo;
-                int clienteID = clienteActual->getID(); // OBTENER EL ID
+                int clienteID = clienteActual->getID();
 
                 bool salirUsuario = false;
                 while (!salirUsuario) {
@@ -537,10 +580,10 @@ void sistemaUsuario() {
 
                     switch (opcionUsuario) {
                     case '1':
-                        agregarPaquete(clienteID); // PASAR EL ID
+                        agregarPaquete(clienteID);
                         break;
                     case '2':
-                        verMisPaquetes(clienteID); // PASAR EL ID
+                        verMisPaquetes(clienteID);
                         break;
                     case '3':
                         realizarPago();
@@ -609,7 +652,6 @@ void sistemaAdministrador() {
     if (!funcionSalida("Usuario: ", usuario)) return;
     if (!funcionSalida("Contrasena: ", contrasena)) return;
 
-    // Credenciales de administrador
     if (usuario != "admin" || contrasena != "admin123") {
         cout << "\nCredenciales incorrectas.\n";
         system("pause");
@@ -638,6 +680,9 @@ void sistemaAdministrador() {
             verColaPagos();
             break;
         case '6':
+            procesarSiguientePago();
+            break;
+        case '7':
         case 27:
             salir = true;
             break;
@@ -655,8 +700,12 @@ int main() {
     srand(time(0));
 
     // Cargar datos existentes
+    cout << "Cargando datos del sistema...\n";
     listaClientes.cargarClientes("clientes.txt");
     pilaPaquetes.cargarDesdeArchivo("paquetes.txt");
+    colaPagos.cargarColaPagos("pagos_pendientes.txt");
+    cout << "Datos cargados exitosamente.\n\n";
+    Sleep(1000);
 
     bool salir = false;
     while (!salir) {

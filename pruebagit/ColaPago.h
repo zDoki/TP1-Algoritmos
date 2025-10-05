@@ -22,36 +22,120 @@ public:
             final = nuevoNodo;
         }
     }
+
     bool desencolar() {
         if (estaVacia()) return false;
         NodoPago<T>* temp = frente;
         frente = frente->next;
-        if (!frente) final = nullptr; // Si la cola queda vacía
+        if (!frente) final = nullptr;
         delete temp;
         return true;
     }
 
     void mostrarCola() const {
         if (estaVacia()) {
-            cout << "La cola esta vacia.\n";
+            cout << "\nLa cola esta vacia. No hay pagos pendientes.\n";
             return;
         }
         NodoPago<T>* temp = frente;
-        cout << "\n------ COLA DE PAGOS ------\n";
+        int contador = 1;
+        cout << "\n========================================\n";
+        cout << "      COLA DE PAGOS PENDIENTES         \n";
+        cout << "========================================\n\n";
+
         while (temp) {
+            cout << "--- Pago #" << contador++ << " ---\n";
             temp->dato.mostrarPagos();
+            cout << "\n";
             temp = temp->next;
+        }
+        cout << "Total de pagos en cola: " << (contador - 1) << "\n";
+        cout << "========================================\n";
+    }
+
+    // NUEVO: Guardar todos los pagos de la cola en archivo
+    void guardarColaPagos(const string& nombreArchivo) const {
+        ofstream out(nombreArchivo, ios::app);
+        if (!out.is_open()) {
+            cout << "Error: No se pudo abrir el archivo para guardar pagos.\n";
+            return;
+        }
+
+        NodoPago<T>* temp = frente;
+        while (temp) {
+            // Formato: producto|cantidad|precio|metodo
+            out << temp->dato.getProducto() << "|"
+                << temp->dato.getCantidad() << "|"
+                << fixed << setprecision(2) << temp->dato.getPrecioUnitario() << "|"
+                << temp->dato.metodo.getTipoPago() << "\n";
+            temp = temp->next;
+        }
+        out.close();
+    }
+
+    // NUEVO: Cargar pagos desde archivo
+    void cargarColaPagos(const string& nombreArchivo) {
+        ifstream in(nombreArchivo);
+        if (!in.is_open()) {
+            cout << "No hay pagos previos registrados.\n";
+            return;
+        }
+
+        string linea;
+        int contador = 0;
+
+        while (getline(in, linea)) {
+            if (linea.empty()) continue;
+
+            stringstream ss(linea);
+            string producto, campo, metodoPago;
+            int cantidad;
+            double precio;
+
+            try {
+                // Leer datos del pago
+                getline(ss, producto, '|');
+
+                getline(ss, campo, '|');
+                cantidad = stoi(campo);
+
+                getline(ss, campo, '|');
+                precio = stod(campo);
+
+                getline(ss, metodoPago, '|');
+
+                // Crear el pago y asignar el método
+                T pago(producto, cantidad, precio);
+                pago.metodo.setTipoPago(metodoPago);
+
+                encolar(pago);
+                contador++;
+            }
+            catch (...) {
+                continue;
+            }
+        }
+        in.close();
+
+        if (contador > 0) {
+            cout << "Se cargaron " << contador << " pagos desde " << nombreArchivo << endl;
         }
     }
 
+    // NUEVO: Contar elementos en la cola
+    int contarElementos() const {
+        int cuenta = 0;
+        NodoPago<T>* temp = frente;
+        while (temp) {
+            cuenta++;
+            temp = temp->next;
+        }
+        return cuenta;
+    }
 
     ~ColaPago() {
         while (!estaVacia()) {
             desencolar();
         }
     }
-
-
-
-
 };
