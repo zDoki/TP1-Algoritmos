@@ -625,7 +625,7 @@ void sistemaUsuario() {
             }
             break;
         }
-        case '2': { // Registrarse
+        case '2': { 
             system("cls");
             cout << "\n--- REGISTRO DE USUARIO ---\n";
             cout << "(Presione ESC para cancelar)\n\n";
