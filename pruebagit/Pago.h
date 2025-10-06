@@ -2,7 +2,7 @@
 #include "Librerias.h"
 #include "NodoPago.h"
 
-// Clase para manejar métodos de pago
+
 class MetodoPago {
 private:
     string tipoPago;
@@ -30,7 +30,7 @@ public:
     }
 };
 
-// Clase template Pago
+
 template <class T>
 class Pago {
 private:
@@ -53,15 +53,18 @@ public:
     void setCantidad(int cant) { cantidad = cant; }
     void setPrecioUnitario(double precio) { precioUnitario = precio; }
 
+
     void mostrarPagos() const {
         cout << "|-------------------------------------------|\n";
-        cout << "| PRODUCTO: " << left << setw(30) << producto << "|\n";
-        cout << "| CANTIDAD: " << left << setw(30) << cantidad << "|\n";
-        cout << "| PRECIO UNIT: S/ " << left << setw(25) << fixed << setprecision(2) << precioUnitario << "|\n";
-        cout << "| METODO PAGO: " << left << setw(27) << metodo.getTipoPago() << "|\n";
-        cout << "| TOTAL: S/ " << left << setw(30) << fixed << setprecision(2) << calcularTotal() << "|\n";
+        cout << "| PRODUCTO: " << producto << "\n";
+        cout << "| CANTIDAD: " << cantidad << "\n";
+        cout << "| PRECIO UNIT: S/ " << precioUnitario << "\n";
+        cout << "| METODO PAGO: " << metodo.getTipoPago() << "\n";
+        cout << "| TOTAL: S/ " << calcularTotal() << "\n";
         cout << "|-------------------------------------------|\n";
     }
+
+
 
     void cargarPagoTexto(const string& pagoStr) {
         istringstream ss(pagoStr);
@@ -81,7 +84,7 @@ public:
     }
 };
 
-// Gestor de Pagos
+
 template <class T>
 class GestorPago {
 private:

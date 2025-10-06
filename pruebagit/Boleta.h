@@ -11,7 +11,7 @@ public:
 
 	string ajustarTexto(const string& texto, size_t ancho) const {
 		if (texto.size() > ancho) {
-			return texto.substr(0, ancho); // recorta texto
+			return texto.substr(0, ancho); // recortar texto
 		}
 		else
 		{
@@ -22,7 +22,7 @@ public:
 	Boleta(string num = "", const Pago<T>& pago = Pago<T>())
 		: numeroBoleta(num), pagoAsociado(pago)
 	{
-		// Obtener la fecha actual
+		// para saber fecha
 		fechaEmision = obtenerFechaHoraActual();
 	}
 
@@ -41,7 +41,7 @@ public:
 			return;
 		}
 
-		// Construyo la parte del pago como texto (sin salto)
+		
 		ostringstream pagoStr;
 		pagoStr << pagoAsociado.getProducto() << "|"
 			<< pagoAsociado.getCantidad() << "|"
@@ -70,7 +70,7 @@ public:
 			return;
 		}
 
-		// Parseo: numeroBoleta | fechaEmision | pagoStr
+		// numeroBoleta | fechaEmision | pagoStr
 		istringstream ss(ultima);
 		string pagoStr;
 		if (!getline(ss, numeroBoleta, '|') ||
@@ -80,11 +80,11 @@ public:
 			return;
 		}
 
-		// Delego el parseo de pago al m�todo del Pago (debe aceptar "producto;cantidad;precio;metodo")
+		
 		pagoAsociado.cargarPagoTexto(pagoStr);
 	}
 
-	// Mostrar detalle de la boleta
+	
 	void mostrarBoleta() {
 		cout << "|-------------------------------------------|\n";
 		cout << "|                                           |\n";

@@ -41,7 +41,7 @@ public:
 		return data;
 	}
 
-	// MODIFICADO: Guardar con formato separado por |
+
 	void guardarPaqueteEnArchivo(T paquete, const string& nombreArchivo) {
 		ofstream archivo(nombreArchivo, ios::app);
 		if (archivo.is_open()) {
@@ -70,7 +70,7 @@ public:
 		}
 	}
 
-	// NUEVO: Mostrar solo paquetes de un cliente específico
+
 	void mostrarPorCliente(int clienteID) {
 		if (!tope) {
 			cout << "No hay paquetes registrados." << endl;
@@ -108,7 +108,7 @@ public:
 		return tope == nullptr;
 	}
 
-	// NUEVO: Leer paquetes de un cliente desde archivo
+	
 	void mostrarPaquetesDeCliente(const string& nombreArchivo, int clienteID) {
 		ifstream archivo(nombreArchivo);
 
@@ -133,15 +133,14 @@ public:
 			int idPaquete, idCliente;
 
 			try {
-				// Leer ID del paquete
+				
 				getline(ss, campo, '|');
 				idPaquete = stoi(campo);
 
-				// Leer ID del cliente
+				
 				getline(ss, campo, '|');
 				idCliente = stoi(campo);
 
-				// Si el paquete pertenece al cliente actual
 				if (idCliente == clienteID) {
 					encontrado = true;
 

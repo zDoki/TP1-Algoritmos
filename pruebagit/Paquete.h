@@ -24,11 +24,11 @@ public:
 		bool repetido;
 
 		do {
-			// Genera ID en el rango [100, 999]
+			
 			nuevoID = rand() % 999 + 100;
 			repetido = false;
 
-			// Verificar si el ID ya existe en el archivo
+			
 			ifstream in(archivo);
 			string linea;
 			while (getline(in, linea)) {
@@ -36,9 +36,9 @@ public:
 
 				stringstream ss(linea);
 				string campo;
-				getline(ss, campo, '|'); // Leer el primer campo (ID)
+				getline(ss, campo, '|'); 
 
-				// Validar que el campo no esté vacío antes de convertir
+			
 				if (!campo.empty()) {
 					try {
 						if (stoi(campo) == nuevoID) {
@@ -46,15 +46,15 @@ public:
 							break;
 						}
 					}
-					catch (...) {
-						// Ignorar líneas con formato inválido
+					catch (...) {// Si hay un error al convertir, simplemente 
+				
 						continue;
 					}
 				}
 			}
 			in.close();
 
-		} while (repetido); // Repetir hasta encontrar uno que no exista
+		} while (repetido); 
 
 		return nuevoID;
 	}
@@ -83,7 +83,6 @@ public:
 		return resultado;
 	}
 
-	// Formato para archivo de texto separado por |
 	string toStringArchivo() const {
 		stringstream ss;
 		ss << id << "|" << clienteID << "|" << descripcion << "|"
@@ -97,7 +96,6 @@ public:
 
 		if (linea.empty()) return false;
 
-		// Separar por '|'
 		stringstream ss(linea);
 		string campo;
 

@@ -22,11 +22,11 @@ public:
         bool repetido;
 
         do {
-            // Genera ID en el rango [100, 999]
-            nuevoID = rand() % 999 + 100;
+            
+            nuevoID = rand() % 999 + 100;//100-999
             repetido = false;
 
-            // Verificar si el ID ya existe en el archivo
+            // Verificar si el id ya existe en el archivo
             ifstream in(archivo);
             string linea;
             while (getline(in, linea)) {
@@ -34,7 +34,7 @@ public:
 
                 stringstream ss(linea);
                 string campo;
-                getline(ss, campo, '|'); // Leer el primer campo (ID)
+                getline(ss, campo, '|'); 
                 if (stoi(campo) == nuevoID) {
                     repetido = true;
                     break;
@@ -42,7 +42,7 @@ public:
             }
             in.close();
 
-        } while (repetido); // Repetir hasta encontrar uno que no exista
+        } while (repetido); 
 
         return nuevoID;
     }

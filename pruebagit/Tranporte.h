@@ -8,7 +8,7 @@ public:
     int calcularPrecio(string depOrigen, string depDestino, int peso) {
         int precioDepartamento = 0, precioPeso = 0;
 
-        // Precio por departamento
+        
         if (depOrigen == "lima" && depDestino == "lima") {
             precioDepartamento = 8;
         }
@@ -28,7 +28,7 @@ public:
             precioDepartamento = 25;
         }
 
-        // Precio por peso
+       
         if (peso >= 1 && peso <= 20) {
             precioPeso = 50;
         }

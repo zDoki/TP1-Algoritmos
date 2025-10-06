@@ -7,7 +7,7 @@
 #include <sstream>
 #include <fstream>
 #include <ostream>
-#include <iomanip>
+#include <iomanip>// para setprecision
 #include <iostream> 
 #include <conio.h>
 #include <random>

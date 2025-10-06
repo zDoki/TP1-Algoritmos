@@ -53,7 +53,7 @@ public:
         cout << "========================================\n";
     }
 
-    // NUEVO: Guardar todos los pagos de la cola en archivo
+
     void guardarColaPagos(const string& nombreArchivo) const {
         ofstream out(nombreArchivo, ios::app);
         if (!out.is_open()) {
@@ -63,7 +63,7 @@ public:
 
         NodoPago<T>* temp = frente;
         while (temp) {
-            // Formato: producto|cantidad|precio|metodo
+            //  producto|cantidad|precio|metodo
             out << temp->dato.getProducto() << "|"
                 << temp->dato.getCantidad() << "|"
                 << fixed << setprecision(2) << temp->dato.getPrecioUnitario() << "|"
@@ -73,7 +73,6 @@ public:
         out.close();
     }
 
-    // NUEVO: Cargar pagos desde archivo
     void cargarColaPagos(const string& nombreArchivo) {
         ifstream in(nombreArchivo);
         if (!in.is_open()) {
@@ -93,7 +92,7 @@ public:
             double precio;
 
             try {
-                // Leer datos del pago
+               
                 getline(ss, producto, '|');
 
                 getline(ss, campo, '|');
@@ -104,7 +103,7 @@ public:
 
                 getline(ss, metodoPago, '|');
 
-                // Crear el pago y asignar el método
+           
                 T pago(producto, cantidad, precio);
                 pago.metodo.setTipoPago(metodoPago);
 
@@ -122,7 +121,7 @@ public:
         }
     }
 
-    // NUEVO: Contar elementos en la cola
+  
     int contarElementos() const {
         int cuenta = 0;
         NodoPago<T>* temp = frente;
