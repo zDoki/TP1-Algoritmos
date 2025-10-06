@@ -44,6 +44,141 @@ public:
     Pago(T prod = T(), int cant = 0, double precio = 0.0)
         : producto(prod), cantidad(cant), precioUnitario(precio) {}
 
+
+    string ajustarTexto(const string& texto, size_t ancho) const {
+        if (texto.size() > ancho) {
+            // recorta texto
+            return texto.substr(0, ancho);
+        }
+        else
+        {
+      
+            return texto + string(ancho - texto.size(), ' ');
+        }
+    }
+
+    void imprimirEnBloques(const string& texto, size_t ancho, const string& prefijoPrimera, const string& prefijoResto) const {
+        size_t inicio = 0;
+        bool primeraLinea = true;
+
+        while (inicio < texto.size()) {
+            string bloque = texto.substr(inicio, ancho);
+            if (primeraLinea) {
+                cout << prefijoPrimera << left << setw(ancho) << bloque << "|\n";
+                primeraLinea = false;
+            }
+            else {
+                cout << prefijoResto << left << setw(ancho) << bloque << "|\n";
+            }
+            inicio += ancho;
+        }
+
+        
+    }
+
+
+    double calcularSubtotal() {
+        function<double(double, int)> subtotal = [&](double unit, int n) {
+            return n == 0 ? 0.0 : unit + subtotal(unit, n - 1);
+            };
+        return subtotal(precioUnitario, cantidad);
+    }
+
+    double calcularIGV() {
+        function<double(double)> igv = [&](double sub) {
+            return sub * 0.18;
+            };
+        return igv(calcularSubtotal());
+    }
+ 
+    double calcularTotal() {
+        function<double(double, int)> subtotal = [&](double unit, int n) {
+            return n == 0 ? 0.0 : unit + subtotal(unit, n - 1);
+            };
+
+        function<double(double)> igv = [&](double sub) {
+            return sub * 0.18;
+            };
+
+        double sub = subtotal(precioUnitario, cantidad);
+        return sub + igv(sub);
+    }
+
+
+    string convertirCentena(int num) {
+        const string unidades[] = { "", "UNO", "DOS", "TRES", "CUATRO", "CINCO",
+                                   "SEIS", "SIETE", "OCHO", "NUEVE",
+                                   "DIEZ", "ONCE", "DOCE", "TRECE", "CATORCE", "QUINCE",
+                                   "DIECISEIS", "DIECISIETE", "DIECIOCHO", "DIECINUEVE" };
+        const string decenas[] = { "", "", "VEINTE", "TREINTA", "CUARENTA", "CINCUENTA",
+                                  "SESENTA", "SETENTA", "OCHENTA", "NOVENTA" };
+        const string centenas[] = { "", "CIENTO", "DOSCIENTOS", "TRESCIENTOS", "CUATROCIENTOS",
+                                   "QUINIENTOS", "SEISCIENTOS", "SETECIENTOS",
+                                   "OCHOCIENTOS", "NOVECIENTOS" };
+
+        if (num == 0) { return "CERO"; }
+        if (num == 100) { return "CIEN"; }
+
+        string texto = "";
+
+        int c = num / 100;
+        int d = (num % 100) / 10;
+        int u = num % 10;
+        int dosDig = num % 100;
+
+        if (c > 0) {
+            texto += centenas[c] + " ";
+        }
+        if (dosDig < 20) {
+            if (dosDig > 0) {
+                texto += unidades[dosDig];
+            }
+        }
+        else {
+            texto += decenas[d];
+            if (u > 0) { texto += " Y " + unidades[u]; }
+        }
+        return texto;
+    }
+  
+    string numeroATexto(long long num) {
+        if (num == 0) return "CERO";
+
+        string texto = "";
+        int miles = num / 1000;
+        int resto = num % 1000;
+
+        if (miles > 0) {
+            if (miles == 1) texto += "MIL ";
+            else texto += convertirCentena(miles) + " MIL ";
+        }
+
+        if (resto > 0) texto += convertirCentena(resto);
+
+        return texto;
+    }
+  
+    string montoEnTexto() {
+        double total = calcularTotal();
+
+        long long parteEntera = static_cast<long long>(total);
+        int centimos = static_cast<int>((total - parteEntera) * 100 + 0.5);
+
+        string texto = numeroATexto(parteEntera) + " SOLES";
+
+        if (centimos > 0) {
+            ostringstream oss;
+            oss << setfill('0') << setw(2) << centimos;
+            texto += " CON " + oss.str() + "/100";
+        }
+        else {
+            texto += " CON 00/100";
+        }
+
+        return texto;
+    }
+
+
     T getProducto() const { return producto; }
     int getCantidad() const { return cantidad; }
     double getPrecioUnitario() const { return precioUnitario; }
@@ -53,18 +188,23 @@ public:
     void setCantidad(int cant) { cantidad = cant; }
     void setPrecioUnitario(double precio) { precioUnitario = precio; }
 
-
-    void mostrarPagos() const {
+   
+    void mostrarPagos() {
         cout << "|-------------------------------------------|\n";
-        cout << "| PRODUCTO: " << producto << "\n";
-        cout << "| CANTIDAD: " << cantidad << "\n";
-        cout << "| PRECIO UNIT: S/ " << precioUnitario << "\n";
-        cout << "| METODO PAGO: " << metodo.getTipoPago() << "\n";
-        cout << "| TOTAL: S/ " << calcularTotal() << "\n";
+        cout << "| Paquete                      Cant  Importe|\n";
+        cout << "| " << setw(25) << left << producto
+            << setw(5) << right << cantidad
+            << setw(9) << right << fixed << setprecision(2) << precioUnitario << " |\n";
+        cout << "|-------------------------------------------|\n";
+        cout << "| OP. GRAVADA :                  S/" << setw(7) << right << fixed << setprecision(2) << calcularSubtotal() << "  |\n";
+        cout << "| IGV (18%) :                    S/" << setw(7) << right << fixed << setprecision(2) << calcularIGV() << "  |\n";
+        cout << "| TOTAL A PAGAR :                S/" << setw(7) << right << fixed << setprecision(2) << calcularTotal() << "  |\n";
+        cout << "|-------------------------------------------|\n";
+        cout << "| Metodo de Pago: " << ajustarTexto(metodo.getTipoPago(), 26) << "|\n";
+        imprimirEnBloques(montoEnTexto(), 37, "| Son: ", "|      ");
+        cout << "|                                           |\n";
         cout << "|-------------------------------------------|\n";
     }
-
-
 
     void cargarPagoTexto(const string& pagoStr) {
         istringstream ss(pagoStr);
@@ -123,10 +263,12 @@ public:
     }
 
     ~GestorPago() {
+        NodoPago<T>* temp;
         while (cabeza) {
-            NodoPago<T>* temp = cabeza;
+            temp = cabeza;
             cabeza = cabeza->next;
             delete temp;
         }
+        cabeza = nullptr;
     }
 };
