@@ -76,6 +76,7 @@ public:
         
     }
 
+    //pfunciones para calcular
 
     double calcularSubtotal() {
         function<double(double, int)> subtotal = [&](double unit, int n) {

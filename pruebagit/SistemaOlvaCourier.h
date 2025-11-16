@@ -8,6 +8,8 @@
 #include "ColaPago.h"
 #include "Cliente.h"
 #include "Tranporte.h"
+#include"HashTablePaquete.h"
+
 
 class SistemaOlvaCourier {
 private:
@@ -16,6 +18,7 @@ private:
     GestoCliente<Cliente> listaClientes;
     ColaPago<Pago<string>> colaPagos;
     Transporte sistemaTransporte;
+    HashTablePaquete<string> hashPaquetes;
 
     
     bool funcionSalida(const string& mensaje, string& entrada) {
@@ -132,12 +135,16 @@ private:
         cout << " [4] Ver Todos los Clientes\n";
         cout << " [5] Ver Cola de Pagos\n";
         cout << " [6] Procesar Siguiente Pago\n";
-        cout << " [7] Volver al Menu Principal\n";
+        cout << " [7] Buscar Paquete por ID (Hash)\n";       // <--- NUEVO
+        cout << " [8] Ver Estadisticas Hash Table\n";        // <--- NUEVO
+        cout << " [9] Buscar por Rango de Peso\n";           // <--- NUEVO
+        cout << " [0] Volver al Menu Principal\n";
         cout << "========================================\n";
         cout << " Presione ESC para volver\n";
         cout << "----------------------------------------\n";
         cout << "Seleccione una opcion: ";
     }
+
 
 
 
@@ -172,7 +179,10 @@ private:
         if (!funcionSalida("Sede de Destino: ", destino)) return;
 
         Paquete<string> nuevoPaquete(descripcion, peso, sedeOrigen, destino, clienteID);
+
+        // Agregar a ambas estructuras
         pilaPaquetes.push(nuevoPaquete);
+        hashPaquetes.insertar(nuevoPaquete);  // <--- AGREGAR
         pilaPaquetes.guardarPaqueteEnArchivo(nuevoPaquete, "paquetes.txt");
 
         cout << "\n========================================\n";
@@ -182,6 +192,7 @@ private:
         cout << "========================================\n";
         system("pause");
     }
+
 
     void verMisPaquetes(int clienteID) {
         system("cls");
@@ -668,19 +679,66 @@ private:
         }
     }
 
-    void sistemaAdministrador() {
+    void buscarPaquetePorID() {
         system("cls");
-        cout << "\n--- ACCESO ADMINISTRADOR ---\n";
-        string usuario, contrasena;
+        cout << "========================================\n";
+        cout << "     BUSCAR PAQUETE POR ID (HASH)      \n";
+        cout << "========================================\n";
 
-        if (!funcionSalida("Usuario: ", usuario)) return;
-        if (!funcionSalida("Contrasena: ", contrasena)) return;
+        string idStr;
+        if (!funcionSalida("Ingrese ID del paquete: ", idStr)) return;
 
-        if (usuario != "admin" || contrasena != "admin123") {
-            cout << "\nCredenciales incorrectas.\n";
-            system("pause");
-            return;
+        try {
+            int id = stoi(idStr);
+            Paquete<string>* paquete = hashPaquetes.buscar(id);
+
+            if (paquete) {
+                cout << "\n¡PAQUETE ENCONTRADO!\n";
+                cout << "========================================\n";
+                paquete->mostrarInfoPaquete();
+                cout << "========================================\n";
+            }
+            else {
+                cout << "\nPaquete no encontrado con ID: " << id << "\n";
+            }
         }
+        catch (...) {
+            cout << "ID invalido\n";
+        }
+
+        system("pause");
+    }
+
+    void verEstadisticasHash() {
+        system("cls");
+        hashPaquetes.mostrarEstadisticas();
+        system("pause");
+    }
+
+    void buscarPorRangoPeso() {
+        system("cls");
+        string pesoMinStr, pesoMaxStr;
+
+        if (!funcionSalida("Peso minimo (kg): ", pesoMinStr)) return;
+        if (!funcionSalida("Peso maximo (kg): ", pesoMaxStr)) return;
+
+        try {
+            double pesoMin = stod(pesoMinStr);
+            double pesoMax = stod(pesoMaxStr);
+            hashPaquetes.buscarPorRangoPeso(pesoMin, pesoMax);
+        }
+        catch (...) {
+            cout << "Valores invalidos\n";
+        }
+
+        system("pause");
+    }
+
+
+
+
+    void sistemaAdministrador() {
+        // ... código existente ...
 
         bool salir = false;
         while (!salir) {
@@ -706,7 +764,16 @@ private:
             case '6':
                 procesarSiguientePago();
                 break;
-            case '7':
+            case '7':                          
+                buscarPaquetePorID();
+                break;
+            case '8':                          
+                verEstadisticasHash();
+                break;
+            case '9':                         
+                buscarPorRangoPeso();
+                break;
+            case '0':                         
             case 27:
                 salir = true;
                 break;
@@ -718,11 +785,13 @@ private:
         }
     }
 
+
 public:
   
     SistemaOlvaCourier() {
         srand((unsigned int)time(0));
     }
+
 
     
     void inicializar() {
@@ -730,6 +799,7 @@ public:
         listaClientes.cargarClientes("clientes.txt");
         pilaPaquetes.cargarDesdeArchivo("paquetes.txt");
         colaPagos.cargarColaPagos("pagos_pendientes.txt");
+        hashPaquetes.cargarDesdeArchivo("paquetes.txt");
         cout << "Datos cargados exitosamente.\n\n";
         Sleep(1000);
     }

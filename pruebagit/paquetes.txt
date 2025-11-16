@@ -1,2 +1,4 @@
 
 456|116|Ropa|2|lince|sjm
+888|116|Ropa|2|Lima|san isidro
+390|116|Ropa|15|lima|lima

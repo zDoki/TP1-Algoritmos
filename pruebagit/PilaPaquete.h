@@ -2,7 +2,7 @@
 #include "NodoPila.h"
 
 template<typename T>
-class PilaPaquete {
+class PilaPaquete {//lifo
 public:
 	NodoPila<T>* tope;
 	int tamanio;

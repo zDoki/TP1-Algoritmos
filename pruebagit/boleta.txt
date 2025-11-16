@@ -1,6 +1,2 @@
-B3OVS-395|04-10-2025 20:59:52|celular|2|150.00|Yape
-B6OVS-869|04-10-2025 21:02:17|jugete|1|25.50|Tarjeta
-B1OVS-435|05-10-2025 12:23:02|jugete|1|25.50|Efectivo
-B8OVS-164|05-10-2025 16:56:23|Servicio|2|10.00|Yape
-B1OVS-698|05-10-2025 17:57:27|Envio Lima -> san isidro (2 kg)|1|75.00|Yape
-B3OVS-326|05-10-2025 18:07:44|Envio lima -> lima (2 kg)|1|58.00|Efectivo
+B3OVS-158|05-10-2025 20:23:02|Envio Lima -> san isidro (2 kg)|1|75.00|Yape
+B6OVS-29|05-10-2025 20:31:57|Envio Lima -> lima (15 kg)|1|75.00|Yape
