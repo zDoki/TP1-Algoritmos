@@ -129,6 +129,7 @@
     <ClInclude Include="Boleta.h" />
     <ClInclude Include="Cliente.h" />
     <ClInclude Include="ColaPago.h" />
+    <ClInclude Include="Dijkstra.h" />
     <ClInclude Include="HashTablePaquete.h" />
     <ClInclude Include="NodoCliente.h" />
     <ClInclude Include="NodoPago.h" />

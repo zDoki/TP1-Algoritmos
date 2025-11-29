@@ -8,8 +8,8 @@
 #include "ColaPago.h"
 #include "Cliente.h"
 #include "Tranporte.h"
-#include"HashTablePaquete.h"
-
+#include "HashTablePaquete.h"
+#include "Dijkstra.h"
 
 class SistemaOlvaCourier {
 private:
@@ -135,10 +135,14 @@ private:
         cout << " [4] Ver Todos los Clientes\n";
         cout << " [5] Ver Cola de Pagos\n";
         cout << " [6] Procesar Siguiente Pago\n";
-        cout << " [7] Buscar Paquete por ID (Hash)\n";       // <--- NUEVO
-        cout << " [8] Ver Estadisticas Hash Table\n";        // <--- NUEVO
-        cout << " [9] Buscar por Rango de Peso\n";           // <--- NUEVO
-        cout << " [0] Volver al Menu Principal\n";
+        cout << " [7] Buscar Paquete por ID (Hash)\n";
+        cout << " [8] Ver Estadisticas Hash Table\n";
+        cout << " [9] Buscar por Rango de Peso\n";
+        cout << " [11] Ver Red de Rutas\n";              
+        cout << " [12] Agregar Nueva Ruta\n";            
+        cout << " [13] Agregar Nueva Ubicacion\n";       
+        cout << " [14] Analizar Eficiencia de Rutas\n";  
+        cout << " [15] Comparar Rutas Alternativas\n";   
         cout << "========================================\n";
         cout << " Presione ESC para volver\n";
         cout << "----------------------------------------\n";
@@ -146,9 +150,7 @@ private:
     }
 
 
-
-
-    void agregarPaquete(int clienteID) {
+    void agregarPaqueteConAnalisis(int clienteID) {
         system("cls");
         cout << "========================================\n";
         cout << "       AGREGAR NUEVO PAQUETE            \n";
@@ -178,11 +180,25 @@ private:
         if (!funcionSalida("Sede de Origen: ", sedeOrigen)) return;
         if (!funcionSalida("Sede de Destino: ", destino)) return;
 
+        // *** NUEVO: Mostrar información de ruta antes de confirmar ***
+        cout << "\n--- ANALISIS DE RUTA ---\n";
+        sistemaTransporte.mostrarRutaDetallada(sedeOrigen, destino, (int)peso);
+
+        cout << "\n¿Desea confirmar el registro del paquete? (S/N): ";
+        char confirmar = _getch();
+        cout << confirmar << "\n";
+
+        if (confirmar != 'S' && confirmar != 's') {
+            cout << "Registro cancelado.\n";
+            system("pause");
+            return;
+        }
+
         Paquete<string> nuevoPaquete(descripcion, peso, sedeOrigen, destino, clienteID);
 
         // Agregar a ambas estructuras
         pilaPaquetes.push(nuevoPaquete);
-        hashPaquetes.insertar(nuevoPaquete);  // <--- AGREGAR
+        hashPaquetes.insertar(nuevoPaquete);
         pilaPaquetes.guardarPaqueteEnArchivo(nuevoPaquete, "paquetes.txt");
 
         cout << "\n========================================\n";
@@ -228,19 +244,13 @@ private:
             return;
         }
 
-        int precioTotal = sistemaTransporte.calcularPrecio(depOrigen, depDestino, peso);
+        cout << "\nCalculando ruta optima...\n";
+        sistemaTransporte.mostrarRutaDetallada(depOrigen, depDestino, peso);
 
-        cout << "\n========================================\n";
-        cout << "       RESUMEN DEL ENVIO                \n";
-        cout << "========================================\n";
-        cout << " Origen:      " << depOrigen << "\n";
-        cout << " Destino:     " << depDestino << "\n";
-        cout << " Peso:        " << peso << " kg\n";
-        cout << "----------------------------------------\n";
-        cout << " COSTO TOTAL: S/ " << precioTotal << ".00\n";
-        cout << "========================================\n\n";
+        // Obtener precio
+        double precioTotal = sistemaTransporte.calcularPrecio(depOrigen, depDestino, peso);
 
-        cout << "Metodos de Pago Disponibles:\n";
+        cout << "\nMetodos de Pago Disponibles:\n";
         cout << "1. Yape\n";
         cout << "2. Tarjeta\n";
         cout << "3. Efectivo\n";
@@ -257,7 +267,7 @@ private:
         }
 
         string descripcionServicio = "Envio " + depOrigen + " -> " + depDestino + " (" + to_string(peso) + " kg)";
-        Pago<string> nuevoPago(descripcionServicio, 1, precioTotal);
+        Pago<string> nuevoPago(descripcionServicio, 1, (int)precioTotal);
 
         switch (opcionPago) {
         case '1':
@@ -299,8 +309,6 @@ private:
         cout << "Pagos en cola: " << colaPagos.contarElementos() << "\n";
         system("pause");
     }
-
-  
 
     void ordenarPaquetesPorPeso() {
         system("cls");
@@ -500,19 +508,192 @@ private:
             return;
         }
 
-        int costo = sistemaTransporte.calcularPrecio(depOrigen, depDestino, peso);
+        sistemaTransporte.mostrarRutaDetallada(depOrigen, depDestino, peso);
 
-        cout << "\n========================================\n";
-        cout << "       DETALLES DEL CALCULO             \n";
-        cout << "========================================\n";
-        cout << " Origen:      " << depOrigen << "\n";
-        cout << " Destino:     " << depDestino << "\n";
-        cout << " Peso:        " << peso << " kg\n";
-        cout << "----------------------------------------\n";
-        cout << " COSTO TOTAL: S/ " << costo << ".00\n";
-        cout << "========================================\n";
         system("pause");
     }
+
+    void verRedRutas() {
+        system("cls");
+        cout << "========================================\n";
+        cout << "       RED DE RUTAS DISPONIBLES         \n";
+        cout << "========================================\n\n";
+
+        sistemaTransporte.mostrarRedRutas();
+
+        cout << "\n========================================\n";
+        system("pause");
+    }
+
+    void agregarNuevaRuta() {
+        system("cls");
+        cout << "========================================\n";
+        cout << "       AGREGAR NUEVA RUTA               \n";
+        cout << "========================================\n";
+        cout << "(Presione ESC para cancelar)\n\n";
+
+        string origen, destino, distanciaStr;
+
+        if (!funcionSalida("Ciudad de Origen: ", origen)) return;
+        if (!funcionSalida("Ciudad de Destino: ", destino)) return;
+        if (!funcionSalida("Distancia (km): ", distanciaStr)) return;
+
+        try {
+            double distancia = stod(distanciaStr);
+            if (distancia <= 0) {
+                cout << "La distancia debe ser mayor a 0\n";
+                system("pause");
+                return;
+            }
+
+            sistemaTransporte.agregarRuta(origen, destino, distancia);
+
+            cout << "\n========================================\n";
+            cout << "       RUTA AGREGADA EXITOSAMENTE      \n";
+            cout << "========================================\n";
+            cout << "Origen: " << origen << "\n";
+            cout << "Destino: " << destino << "\n";
+            cout << "Distancia: " << distancia << " km\n";
+            cout << "========================================\n";
+        }
+        catch (...) {
+            cout << "Error: Distancia invalida\n";
+        }
+
+        system("pause");
+    }
+
+    void agregarNuevaUbicacion() {
+        system("cls");
+        cout << "========================================\n";
+        cout << "     AGREGAR NUEVA UBICACION            \n";
+        cout << "========================================\n";
+        cout << "(Presione ESC para cancelar)\n\n";
+
+        string idStr, nombre;
+
+        if (!funcionSalida("ID de la ubicacion: ", idStr)) return;
+        if (!funcionSalida("Nombre de la ubicacion: ", nombre)) return;
+
+        try {
+            int id = stoi(idStr);
+
+            sistemaTransporte.agregarUbicacion(id, nombre);
+
+            cout << "\n========================================\n";
+            cout << "    UBICACION AGREGADA EXITOSAMENTE    \n";
+            cout << "========================================\n";
+            cout << "ID: " << id << "\n";
+            cout << "Nombre: " << nombre << "\n";
+            cout << "========================================\n";
+            cout << "\nAhora puede agregar rutas desde/hacia esta ubicacion.\n";
+        }
+        catch (...) {
+            cout << "Error: ID invalido\n";
+        }
+
+        system("pause");
+    }
+
+    void analizarEficienciaRutas() {
+        system("cls");
+        cout << "========================================\n";
+        cout << "     ANALISIS DE EFICIENCIA DE RUTAS    \n";
+        cout << "========================================\n\n";
+
+        struct RutaComun {
+            string origen;
+            string destino;
+            int peso;
+        };
+
+        vector<RutaComun> rutasComunes = {
+            {"Lima", "Arequipa", 20},
+            {"Lima", "Cusco", 25},
+            {"Lima", "Trujillo", 15},
+            {"Arequipa", "Cusco", 30},
+            {"Chiclayo", "Piura", 10}
+        };
+
+        cout << "Analizando rutas mas comunes...\n\n";
+        cout << left << setw(15) << "Origen"
+            << setw(15) << "Destino"
+            << setw(12) << "Peso(kg)"
+            << setw(15) << "Distancia"
+            << setw(15) << "Precio" << "\n";
+        cout << string(72, '-') << "\n";
+
+        for (const auto& ruta : rutasComunes) {
+            // Crear instancia de Dijkstra
+            AlgoritmoDijkstra<double> dijkstra(*sistemaTransporte.getGrafoRutas());
+            ResultadoDijkstra<double> resultado =
+                dijkstra.ejecutarPorNombre(ruta.origen, ruta.destino);
+
+            if (resultado.exito) {
+                double precio = sistemaTransporte.calcularPrecio(
+                    ruta.origen, ruta.destino, ruta.peso);
+
+                cout << left << setw(15) << ruta.origen
+                    << setw(15) << ruta.destino
+                    << setw(12) << ruta.peso
+                    << setw(15) << (to_string((int)resultado.distanciaTotal) + " km")
+                    << "S/ " << fixed << setprecision(2) << precio << "\n";
+            }
+        }
+
+        cout << "\n========================================\n";
+
+        // Mostrar estadísticas de la red
+        AnalizadorRutas<double> analizador(*sistemaTransporte.getGrafoRutas());
+        analizador.mostrarEstadisticasRed();
+
+        system("pause");
+    }
+
+    void compararRutasAlternativas() {
+        system("cls");
+        cout << "========================================\n";
+        cout << "     COMPARAR RUTAS ALTERNATIVAS        \n";
+        cout << "========================================\n";
+        cout << "(Presione ESC para cancelar)\n\n";
+
+        string origen, destino, pesoStr;
+        int peso;
+
+        if (!funcionSalida("Ciudad de Origen: ", origen)) return;
+        if (!funcionSalida("Ciudad de Destino: ", destino)) return;
+        if (!funcionSalida("Peso del paquete (kg): ", pesoStr)) return;
+
+        try {
+            peso = stoi(pesoStr);
+            if (peso <= 0) {
+                cout << "El peso debe ser mayor a 0\n";
+                system("pause");
+                return;
+            }
+        }
+        catch (...) {
+            cout << "Peso invalido\n";
+            system("pause");
+            return;
+        }
+
+        cout << "\n--- RUTA OPTIMA (Dijkstra) ---\n";
+        sistemaTransporte.mostrarRutaDetallada(origen, destino, peso);
+
+        cout << "\n¿Desea ver estadisticas de la red? (S/N): ";
+        char opcion = _getch();
+        cout << opcion << "\n\n";
+
+        if (opcion == 'S' || opcion == 's') {
+            AnalizadorRutas<double> analizador(*sistemaTransporte.getGrafoRutas());
+            analizador.mostrarEstadisticasRed();
+        }
+
+        system("pause");
+    }
+
+
 
     void verTodosClientes() {
         system("cls");
@@ -615,7 +796,7 @@ private:
 
                         switch (opcionUsuario) {
                         case '1':
-                            agregarPaquete(clienteID);
+                            agregarPaqueteConAnalisis(clienteID);
                             break;
                         case '2':
                             verMisPaquetes(clienteID);
@@ -738,8 +919,6 @@ private:
 
 
     void sistemaAdministrador() {
-        // ... código existente ...
-
         bool salir = false;
         while (!salir) {
             menuAdministrador();
@@ -764,17 +943,31 @@ private:
             case '6':
                 procesarSiguientePago();
                 break;
-            case '7':                          
+            case '7':
                 buscarPaquetePorID();
                 break;
-            case '8':                          
+            case '8':
                 verEstadisticasHash();
                 break;
-            case '9':                         
+            case '9':
                 buscarPorRangoPeso();
                 break;
-            case '0':                         
-            case 27:
+            case '11':  
+                verRedRutas();
+                break;
+            case '12':
+                agregarNuevaRuta();
+                break;
+            case '13':  
+                agregarNuevaUbicacion();
+                break;
+            case '14':  
+                analizarEficienciaRutas();
+                break;
+            case '15':  
+                compararRutasAlternativas();
+                break;
+            case 27:  // ESC
                 salir = true;
                 break;
             default:

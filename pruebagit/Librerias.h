@@ -7,10 +7,13 @@
 #include <sstream>
 #include <fstream>
 #include <ostream>
-#include <iomanip>// para setprecision
+#include <iomanip> // para setprecision
 #include <iostream> 
 #include <conio.h>
 #include <random>
+#include <map>
+#include <limits>
+#include <algorithm>
 
 using namespace std;
 using namespace System;

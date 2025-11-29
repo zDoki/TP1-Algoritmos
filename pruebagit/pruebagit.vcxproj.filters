@@ -65,6 +65,9 @@
     <ClInclude Include="HashTablePaquete.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+    <ClInclude Include="Dijkstra.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pruebagit.cpp">
