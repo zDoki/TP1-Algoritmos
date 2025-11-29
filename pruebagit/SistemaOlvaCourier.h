@@ -487,6 +487,20 @@ private:
         cout << "========================================\n";
         cout << "(Presione ESC para cancelar)\n\n";
 
+        Grafo<double>* grafo = sistemaTransporte.getGrafoRutas();
+        vector<string> ciudadesDisponibles = grafo->obtenerTodosLosNombres();
+
+        cout << "Ciudades disponibles:\n";
+        if (ciudadesDisponibles.empty()) {
+            cout << "  (No hay ciudades cargadas en el sistema).\n\n";
+        }
+        else {
+            for (size_t i = 0; i < ciudadesDisponibles.size(); i++) {
+                cout << "  " << i + 1 << ". " << ciudadesDisponibles[i] << "\n";
+            }
+        }
+        cout << "----------------------------------------\n\n";
+
         string depOrigen, depDestino, pesoStr;
         int peso;
 
