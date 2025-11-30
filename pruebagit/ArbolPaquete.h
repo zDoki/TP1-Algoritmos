@@ -64,7 +64,6 @@ private:
         }
     }
 
-    //funcion recursiva
     void liberarNodos(NodoArbol<T>* nodo) {
         if (nodo) {
             liberarNodos(nodo->izquierda);
@@ -82,6 +81,27 @@ public:
     void insertar(const Paquete<T>& paquete) {
         raiz = insertarRecursivo(raiz, paquete);
     }
+    
+    void mostrarEnOrdenConEstadisticas() const {
+        system("cls");
+        cout << "========================================\n";
+        cout << "   PAQUETES ORDENADOS POR PESO (BST)   \n";
+        cout << "   (Menor a Mayor)                     \n";
+        cout << "========================================\n\n";
+
+        if (raiz == nullptr) {
+            cout << "No hay paquetes en el arbol.\n";
+            return;
+        }
+
+        int contador = 1;
+        mostrarEnOrdenRecursivo(raiz, contador);
+
+        cout << "\n========================================\n";
+        cout << "  Total de paquetes: " << numElementos << "\n";
+        cout << "========================================\n";
+    }
+
 
     void mostrarEnOrden() const {
         system("cls");
@@ -161,4 +181,7 @@ public:
         archivo.close();
         cout << "Se cargaron " << cargados << " paquetes en el Arbol Binario de Busqueda.\n";
     }
+
+
+
 };

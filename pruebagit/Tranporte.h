@@ -6,7 +6,6 @@ class Transporte {
 private:
     Grafo<double>* grafoRutas;
 
-    // Calcula precio base seg�n distancia
     double calcularPrecioPorDistancia(double distancia) const {
         if (distancia <= 50) return 25.0;
         else if (distancia <= 150) return 45.0;
@@ -15,7 +14,6 @@ private:
         else return 180.0;
     }
 
-    // Calcula recargo seg�n peso del paquete
     double calcularRecargoPorPeso(int peso) const {
         if (peso <= 5) return 0.0;
         else if (peso <= 10) return 10.0;
@@ -34,9 +32,6 @@ public:
         delete grafoRutas;
     }
 
-  
-
-    // Inicializa la red de rutas del Perú
     void inicializarRutas() {
         grafoRutas->agregarNodo(0, "Lima");
         grafoRutas->agregarNodo(1, "Arequipa");

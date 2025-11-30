@@ -10,6 +10,7 @@
 #include "Tranporte.h"
 #include "HashTablePaquete.h"
 #include "Dijkstra.h"
+#include "ArbolPaquete.h"
 
 class SistemaOlvaCourier {
 private:
@@ -19,6 +20,8 @@ private:
     ColaPago<Pago<string>> colaPagos;
     Transporte sistemaTransporte;
     HashTablePaquete<string> hashPaquetes;
+    ArbolPaquete<string> arbolPaquetes;
+
 
 
     bool funcionSalida(const string& mensaje, string& entrada) {
@@ -183,6 +186,7 @@ private:
 
         // *** NUEVO: Mostrar información de ruta antes de confirmar ***
         cout << "\n--- ANALISIS DE RUTA ---\n";
+
         sistemaTransporte.mostrarRutaDetallada(sedeOrigen, destino, (int)peso);
 
         cout << "\n¿Desea confirmar el registro del paquete? (S/N): ";
@@ -200,6 +204,7 @@ private:
         // Agregar a ambas estructuras
         pilaPaquetes.push(nuevoPaquete);
         hashPaquetes.insertar(nuevoPaquete);
+        arbolPaquetes.insertar(nuevoPaquete);
         pilaPaquetes.guardarPaqueteEnArchivo(nuevoPaquete, "paquetes.txt");
 
         cout << "\n========================================\n";
@@ -314,9 +319,11 @@ private:
     void ordenarPaquetesPorPeso() {
         system("cls");
         cout << "========================================\n";
-        cout << "    ORDENAR PAQUETES POR PESO (BURBUJA) \n";
+        cout << "    ORDENAR PAQUETES POR PESO (BST)    \n";
         cout << "========================================\n";
         cout << "Leyendo paquetes desde paquetes.txt...\n\n";
+
+        ArbolPaquete<string> arbolPaquetes;
 
         ifstream archivo("paquetes.txt");
         if (!archivo.is_open()) {
@@ -325,91 +332,20 @@ private:
             return;
         }
 
-        vector<Paquete<string>> paquetes;
         string linea;
+        int cargados = 0;
+        int errores = 0;
 
-        while (getline(archivo, linea)) {
-            if (linea.empty()) continue;
+        arbolPaquetes.cargarDesdeArchivo("paquetes.txt");
 
-            stringstream ss(linea);
-            string campo;
-            Paquete<string> paq;
+        arbolPaquetes.mostrarEnOrdenConEstadisticas();
 
-            try {
-                getline(ss, campo, '|');
-                paq.id = stoi(campo);
+        arbolPaquetes.mostrarEnOrden();
 
-                getline(ss, campo, '|');
-                paq.clienteID = stoi(campo);
-
-                getline(ss, paq.descripcion, '|');
-
-                getline(ss, campo, '|');
-                paq.peso = stod(campo);
-
-                getline(ss, paq.sedeOrigen, '|');
-                getline(ss, paq.destino, '|');
-
-                if (paq.id > 0 && paq.peso > 0) {
-                    paquetes.push_back(paq);
-                }
-            }
-            catch (...) {
-                continue;
-            }
-        }
-        archivo.close();
-
-        if (paquetes.empty()) {
-            cout << "\nNo se encontraron paquetes validos en el archivo.\n";
-            system("pause");
-            return;
-        }
-
-        cout << "Se cargaron " << paquetes.size() << " paquetes del archivo.\n";
-        cout << "Aplicando ordenamiento burbuja...\n\n";
-
-        int n = paquetes.size();
-        bool intercambio;
-        int comparaciones = 0;
-        int intercambios = 0;
-
-        for (int i = 0; i < n - 1; i++) {
-            intercambio = false;
-            for (int j = 0; j < n - i - 1; j++) {
-                comparaciones++;
-                if (paquetes[j].peso > paquetes[j + 1].peso) {
-                    swap(paquetes[j], paquetes[j + 1]);
-                    intercambio = true;
-                    intercambios++;
-                }
-            }
-            if (!intercambio) break;
-        }
-
-        cout << "========================================\n";
-        cout << "   PAQUETES ORDENADOS POR PESO         \n";
-        cout << "   (Menor a Mayor)                     \n";
-        cout << "========================================\n\n";
-
-        for (size_t i = 0; i < paquetes.size(); i++) {
-            cout << "Posicion #" << (i + 1) << "\n";
-            cout << "  ID Paquete:  " << paquetes[i].id << "\n";
-            cout << "  ID Cliente:  " << paquetes[i].clienteID << "\n";
-            cout << "  Descripcion: " << paquetes[i].descripcion << "\n";
-            cout << "  Peso:        " << fixed << setprecision(2) << paquetes[i].peso << " kg\n";
-            cout << "  Ruta:        " << paquetes[i].sedeOrigen << " -> " << paquetes[i].destino << "\n";
-            cout << "----------------------------------------\n";
-        }
-
-        cout << "\n========================================\n";
-        cout << "ESTADISTICAS DEL ORDENAMIENTO:\n";
-        cout << "  Total de paquetes: " << n << "\n";
-        cout << "  Comparaciones:     " << comparaciones << "\n";
-        cout << "  Intercambios:      " << intercambios << "\n";
-        cout << "========================================\n";
         system("pause");
     }
+
+
 
     void mostrarTodosPaquetes() {
         system("cls");
@@ -1058,6 +994,8 @@ public:
         pilaPaquetes.cargarDesdeArchivo("paquetes.txt");
         colaPagos.cargarColaPagos("pagos_pendientes.txt");
         hashPaquetes.cargarDesdeArchivo("paquetes.txt");
+        arbolPaquetes.cargarDesdeArchivo("paquetes.txt");
+
         cout << "Datos cargados exitosamente.\n\n";
         Sleep(1000);
     }
