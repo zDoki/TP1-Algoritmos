@@ -6,7 +6,7 @@ class Transporte {
 private:
     Grafo<double>* grafoRutas;
 
-    // Calcula precio base según distancia
+    // Calcula precio base segï¿½n distancia
     double calcularPrecioPorDistancia(double distancia) const {
         if (distancia <= 50) return 25.0;
         else if (distancia <= 150) return 45.0;
@@ -15,7 +15,7 @@ private:
         else return 180.0;
     }
 
-    // Calcula recargo según peso del paquete
+    // Calcula recargo segï¿½n peso del paquete
     double calcularRecargoPorPeso(int peso) const {
         if (peso <= 5) return 0.0;
         else if (peso <= 10) return 10.0;
@@ -34,7 +34,10 @@ public:
         delete grafoRutas;
     }
 
-    // Inicializa la red de rutas del Perú
+  
+
+
+    // Inicializa la red de rutas del PerÃº
     void inicializarRutas() {
         grafoRutas->agregarNodo(0, "Lima");
         grafoRutas->agregarNodo(1, "Arequipa");
@@ -91,7 +94,7 @@ public:
         grafoRutas->agregarAristaBidireccional(12, 6, 950.0);  // Cajamarca - Iquitos 
     }
 
-    // Calcula el precio total del envío
+    // Calcula el precio total del envï¿½o
     double calcularPrecio(const string& origen, const string& destino, int peso) const {
         AlgoritmoDijkstra<double> dijkstra(*grafoRutas);
         ResultadoDijkstra<double> resultado = dijkstra.ejecutarPorNombre(origen, destino);
@@ -107,7 +110,7 @@ public:
         return precioBase + recargo;
     }
 
-    // Muestra información detallada de la ruta
+    // Muestra informaciï¿½n detallada de la ruta
     void mostrarRutaDetallada(const string& origen, const string& destino, int peso) const {
         AlgoritmoDijkstra<double> dijkstra(*grafoRutas);
 
