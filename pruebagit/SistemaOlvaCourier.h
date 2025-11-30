@@ -13,14 +13,14 @@
 
 class SistemaOlvaCourier {
 private:
-    
+
     PilaPaquete<Paquete<string>> pilaPaquetes;
     GestoCliente<Cliente> listaClientes;
     ColaPago<Pago<string>> colaPagos;
     Transporte sistemaTransporte;
     HashTablePaquete<string> hashPaquetes;
 
-    
+
     bool funcionSalida(const string& mensaje, string& entrada) {
         cout << mensaje;
         entrada.clear();
@@ -51,7 +51,7 @@ private:
         return true;
     }
 
-    
+
 
     void mostrarLogoOLVA() {
         cout << "#####################   ##########             ############          #############   ###############################\n";
@@ -138,11 +138,11 @@ private:
         cout << " [7] Buscar Paquete por ID (Hash)\n";
         cout << " [8] Ver Estadisticas Hash Table\n";
         cout << " [9] Buscar por Rango de Peso\n";
-        cout << " [11] Ver Red de Rutas\n";              
-        cout << " [12] Agregar Nueva Ruta\n";            
-        cout << " [13] Agregar Nueva Ubicacion\n";       
-        cout << " [14] Analizar Eficiencia de Rutas\n";  
-        cout << " [15] Comparar Rutas Alternativas\n";   
+        cout << " [11] Ver Red de Rutas\n";
+        cout << " [12] Agregar Nueva Ruta\n";
+        cout << " [13] Agregar Nueva Ubicacion\n";
+        cout << " [14] Analizar Eficiencia de Rutas\n";
+        cout << " [15] Comparar Rutas Alternativas\n";
         cout << "========================================\n";
         cout << " Presione ESC para volver\n";
         cout << "----------------------------------------\n";
@@ -778,18 +778,36 @@ private:
         system("pause");
     }
 
-  
+
 
     void sistemaUsuario() {
-        char tecla;
         bool salir = false;
 
         while (!salir) {
             menuLoginUsuario();
-            tecla = _getch();
 
-            switch (tecla) {
-            case '1': {
+            // --- INICIO DE MODIFICACION (Manejo de entrada con Enter) ---
+            string opcionPrincipalStr;
+            int opcionPrincipal = -1;
+
+            if (!funcionSalida("", opcionPrincipalStr)) {
+                opcionPrincipal = 3; // ESC significa Volver al Menu Principal
+            }
+            else {
+                try {
+                    if (!opcionPrincipalStr.empty()) {
+                        opcionPrincipal = stoi(opcionPrincipalStr);
+                    }
+                }
+                catch (...) {
+                    opcionPrincipal = -1;
+                }
+            }
+            // --- FIN DE MODIFICACION ---
+
+
+            switch (opcionPrincipal) {
+            case 1: {
                 system("cls");
                 cout << "\n--- INICIAR SESION ---\n";
                 cout << "(Presione ESC para cancelar)\n\n";
@@ -806,20 +824,37 @@ private:
                     bool salirUsuario = false;
                     while (!salirUsuario) {
                         menuUsuario(nombreCompleto);
-                        char opcionUsuario = _getch();
+
+                        // --- INICIO DE MODIFICACION (Manejo de entrada con Enter) ---
+                        string opcionUsuarioStr;
+                        int opcionUsuario = -1;
+
+                        if (!funcionSalida("", opcionUsuarioStr)) {
+                            opcionUsuario = 4; // ESC en este menú significa Cerrar Sesión (Opción 4)
+                        }
+                        else {
+                            try {
+                                if (!opcionUsuarioStr.empty()) {
+                                    opcionUsuario = stoi(opcionUsuarioStr);
+                                }
+                            }
+                            catch (...) {
+                                opcionUsuario = -1;
+                            }
+                        }
+                        // --- FIN DE MODIFICACION ---
 
                         switch (opcionUsuario) {
-                        case '1':
+                        case 1:
                             agregarPaqueteConAnalisis(clienteID);
                             break;
-                        case '2':
+                        case 2:
                             verMisPaquetes(clienteID);
                             break;
-                        case '3':
+                        case 3:
                             realizarPago();
                             break;
-                        case '4':
-                        case 27:
+                        case 4:
                             cout << "\nCerrando sesion...\n";
                             salirUsuario = true;
                             break;
@@ -836,7 +871,7 @@ private:
                 }
                 break;
             }
-            case '2': {
+            case 2: {
                 system("cls");
                 cout << "\n--- REGISTRO DE USUARIO ---\n";
                 cout << "(Presione ESC para cancelar)\n\n";
@@ -862,8 +897,7 @@ private:
                 system("pause");
                 break;
             }
-            case '3':
-            case 27:
+            case 3:
                 salir = true;
                 break;
             default:
@@ -936,56 +970,76 @@ private:
         bool salir = false;
         while (!salir) {
             menuAdministrador();
-            char tecla = _getch();
 
-            switch (tecla) {
-            case '1':
+            // --- INICIO DE MODIFICACION (Manejo de entrada con Enter) ---
+            string opcionStr;
+            int opcion = -1;
+
+            // Usar funcionSalida para capturar la opción como string
+            if (!funcionSalida("", opcionStr)) {
+                salir = true; // Si se presiona ESC, sale del bucle
+                continue;
+            }
+
+            // Intentar convertir la entrada a entero
+            try {
+                if (!opcionStr.empty()) {
+                    opcion = stoi(opcionStr);
+                }
+            }
+            catch (...) {
+                opcion = -1; // Valor no válido
+            }
+            // --- FIN DE MODIFICACION ---
+
+            switch (opcion) {
+            case 1:
                 ordenarPaquetesPorPeso();
                 break;
-            case '2':
+            case 2:
                 mostrarTodosPaquetes();
                 break;
-            case '3':
+            case 3:
                 calcularCostoEnvio();
                 break;
-            case '4':
+            case 4:
                 verTodosClientes();
                 break;
-            case '5':
+            case 5:
                 verColaPagos();
                 break;
-            case '6':
+            case 6:
                 procesarSiguientePago();
                 break;
-            case '7':
+            case 7:
                 buscarPaquetePorID();
                 break;
-            case '8':
+            case 8:
                 verEstadisticasHash();
                 break;
-            case '9':
+            case 9:
                 buscarPorRangoPeso();
                 break;
-            case '11':  
+            case 11:
                 verRedRutas();
                 break;
-            case '12':
+            case 12:
                 agregarNuevaRuta();
                 break;
-            case '13':  
+            case 13:
                 agregarNuevaUbicacion();
                 break;
-            case '14':  
+            case 14:
                 analizarEficienciaRutas();
                 break;
-            case '15':  
+            case 15:
                 compararRutasAlternativas();
                 break;
-            case 27:  // ESC
+            case 27:  // Asumimos que ESC ya fue manejado por funcionSalida
                 salir = true;
                 break;
             default:
-                cout << "\nOpcion no valida\n";
+                cout << "\nOpcion no valida. Por favor, ingrese un numero de opcion valido.\n";
                 system("pause");
                 break;
             }
@@ -994,13 +1048,13 @@ private:
 
 
 public:
-  
+
     SistemaOlvaCourier() {
         srand((unsigned int)time(0));
     }
 
 
-    
+
     void inicializar() {
         cout << "Cargando datos del sistema...\n";
         listaClientes.cargarClientes("clientes.txt");
@@ -1015,17 +1069,35 @@ public:
         bool salir = false;
         while (!salir) {
             menuPrincipal();
-            char tecla = _getch();
 
-            switch (tecla) {
-            case '1':
+            // --- INICIO DE MODIFICACION (Manejo de entrada con Enter) ---
+            string opcionStr;
+            int opcion = -1;
+
+            if (!funcionSalida("", opcionStr)) {
+                opcion = 3; // ESC significa salir (Opción 3)
+            }
+            else {
+                // Intentar convertir la entrada a entero
+                try {
+                    if (!opcionStr.empty()) {
+                        opcion = stoi(opcionStr);
+                    }
+                }
+                catch (...) {
+                    opcion = -1; // Valor no válido
+                }
+            }
+          
+
+            switch (opcion) {
+            case 1:
                 sistemaUsuario();
                 break;
-            case '2':
+            case 2:
                 sistemaAdministrador();
                 break;
-            case '3':
-            case 27:
+            case 3:
                 cout << "\n\nGracias por usar Olva Courier. Hasta pronto!\n";
                 salir = true;
                 break;

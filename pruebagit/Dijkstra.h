@@ -1,7 +1,7 @@
 #pragma once
 #include "Librerias.h"
 
-// Nodo del grafo que representa una ubicación
+// Nodo del grafo que representa una ubicaciï¿½n
 template<typename T>
 class NodoGrafo {
 public:
@@ -75,7 +75,7 @@ public:
 
     vector<string> obtenerTodosLosNombres() const {
         vector<string> nombres;
-        NodoGrafo<T>* actual = nodos; // 'nodos' es la cabeza de la lista de vértices
+        NodoGrafo<T>* actual = nodos; // 'nodos' es la cabeza de la lista de vï¿½rtices
         while (actual) {
             nombres.push_back(actual->nombre);
             actual = actual->siguiente;
@@ -169,7 +169,7 @@ public:
 };
 
 // Estructura para almacenar resultados de Dijkstra 
-// Esta estructura gestiona la memoria de los arrays dinámicos
+// Esta estructura gestiona la memoria de los arrays dinï¿½micos
 template<typename T>
 class ResultadoDijkstra {
 public:
@@ -210,7 +210,7 @@ public:
         }
     }
 
-    // Operador de asignación
+    // Operador de asignaciï¿½n
     ResultadoDijkstra& operator=(const ResultadoDijkstra& otro) {
         if (this != &otro) {
             if (predecesores) delete[] predecesores;
@@ -249,8 +249,8 @@ public:
     }
 };
 
-// IMPLEMENTACIÓN DEL ALGORITMO DE DIJKSTRA
-// Encuentra el camino más corto entre dos nodos usando distancias mínimas acumuladas
+// IMPLEMENTACIï¿½N DEL ALGORITMO DE DIJKSTRA
+// Encuentra el camino mï¿½s corto entre dos nodos usando distancias mï¿½nimas acumuladas
 template<typename T>
 class AlgoritmoDijkstra {
 private:
@@ -285,7 +285,7 @@ private:
 public:
     AlgoritmoDijkstra(const Grafo<T>& _grafo) : grafo(_grafo) {}
 
-    // Ejecuta Dijkstra desde un nodo origen a todos los demás
+    // Ejecuta Dijkstra desde un nodo origen a todos los demï¿½s
     ResultadoDijkstra<T> ejecutar(int idOrigen) const {
         ResultadoDijkstra<T> resultado;
         int totalNodos = MAX_NODOS;
@@ -295,7 +295,7 @@ public:
         resultado.predecesores = new int[totalNodos];
         bool* visitado = new bool[totalNodos];
 
-        // Inicialización
+        // Inicializaciï¿½n
         for (int i = 0; i < totalNodos; i++) {
             resultado.distancias[i] = 999999;
             resultado.predecesores[i] = -1;
@@ -312,7 +312,7 @@ public:
 
             visitado[u] = true;
 
-            // Relajación de aristas
+            // Relajaciï¿½n de aristas
             ListaAdyacencia<T>* lista = grafo.obtenerAdyacencias(u);
             if (lista) {
                 Arista<T>* arista = lista->cabeza;
@@ -373,7 +373,7 @@ public:
     }
 };
 
-// ANALIZADOR DE RUTAS - Proporciona estadísticas sobre la red
+// ANALIZADOR DE RUTAS - Proporciona estadï¿½sticas sobre la red
 template<typename T>
 class AnalizadorRutas {
 private:
