@@ -47,7 +47,7 @@ public:
     }
 
     void mostrar() {
-        cout << "ID: " << id
+        cout << "ID: " << id << " "
             << "Cliente: " << nombres << " " << apellidos
             << " | DNI: " << dni << " | Pais: " << pais
             << " | Correo: " << correo << endl;

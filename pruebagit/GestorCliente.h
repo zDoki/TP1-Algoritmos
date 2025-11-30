@@ -52,7 +52,7 @@ public:
     }
 
     void guardarClientes(const string& nombreArchivo) const {
-        ofstream out(nombreArchivo, ios::app);
+        ofstream out(nombreArchivo);
         if (!out) {
             cerr << "No se pudo abrir el archivo para guardar.\n";
             return;

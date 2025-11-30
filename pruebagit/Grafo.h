@@ -33,7 +33,7 @@ public:
 
     vector<string> obtenerTodosLosNombres() const {
         vector<string> nombres;
-        NodoGrafo<T>* actual = nodos; // 'nodos' es la cabeza de la lista de vértices
+        NodoGrafo<T>* actual = nodos; // 'nodos' es la cabeza de la lista de vertices
         while (actual) {
             nombres.push_back(actual->nombre);
             actual = actual->siguiente;

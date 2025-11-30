@@ -126,6 +126,8 @@
     <ResourceCompile Include="app.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnalizadorRutas.h" />
+    <ClInclude Include="Arista.h" />
     <ClInclude Include="Boleta.h" />
     <ClInclude Include="Cliente.h" />
     <ClInclude Include="ColaPago.h" />

@@ -36,7 +36,6 @@ public:
 
   
 
-
     // Inicializa la red de rutas del Perú
     void inicializarRutas() {
         grafoRutas->agregarNodo(0, "Lima");
@@ -96,7 +95,7 @@ public:
 
     // Calcula el precio total del env�o
     double calcularPrecio(const string& origen, const string& destino, int peso) const {
-        AlgoritmoDijkstra<double> dijkstra(*grafoRutas);
+        Dijkstra<double> dijkstra(*grafoRutas);
         ResultadoDijkstra<double> resultado = dijkstra.ejecutarPorNombre(origen, destino);
 
         if (!resultado.exito) {
@@ -112,7 +111,7 @@ public:
 
     // Muestra informaci�n detallada de la ruta
     void mostrarRutaDetallada(const string& origen, const string& destino, int peso) const {
-        AlgoritmoDijkstra<double> dijkstra(*grafoRutas);
+        Dijkstra<double> dijkstra(*grafoRutas);
 
         int idOrigen = -1, idDestino = -1;
         NodoGrafo<double>* actual = grafoRutas->obtenerNodos();

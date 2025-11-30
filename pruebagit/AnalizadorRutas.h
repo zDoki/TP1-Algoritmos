@@ -1,7 +1,7 @@
 #pragma once
 #include "Grafo.h"
 
-// ANALIZADOR DE RUTAS - Proporciona estadísticas sobre la red
+// ANALIZADOR DE RUTAS - Proporciona estad?sticas sobre la red
 template<typename T>
 class AnalizadorRutas {
 private:

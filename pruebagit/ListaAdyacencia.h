@@ -1,5 +1,8 @@
 #pragma once
+#include "Librerias.h"
+#include "Arista.h"
 
+// Lista de adyacencia para cada nodo
 template<typename T>
 class ListaAdyacencia {
 public:

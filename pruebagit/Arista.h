@@ -1,5 +1,7 @@
 #pragma once
+#include "Librerias.h"
 
+// Arista que conecta dos nodos con un peso (distancia)
 template<typename T>
 class Arista {
 public:

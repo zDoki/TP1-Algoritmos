@@ -2,3 +2,6 @@
 456|116|Ropa|2|lince|sjm
 888|116|Ropa|2|Lima|san isidro
 390|116|Ropa|15|lima|lima
+155|619|Chompa|13|Lima|Ayacucho
+786|619|Mesa|50|Lima|Ayacucho
+512|619|Sofa|123|Lima|Ayacucho

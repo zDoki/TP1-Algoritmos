@@ -2,6 +2,8 @@
 #include "Librerias.h"
 
 // Estructura para almacenar resultados de Dijkstra 
+// Esta estructura gestiona la memoria de los arrays dinamicos
+
 template<typename T>
 class ResultadoDijkstra {
 public:
@@ -42,7 +44,7 @@ public:
         }
     }
 
-    // Operador de asignación
+    // Operador de asignacion
     ResultadoDijkstra& operator=(const ResultadoDijkstra& otro) {
         if (this != &otro) {
             if (predecesores) delete[] predecesores;

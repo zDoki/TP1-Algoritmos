@@ -116,8 +116,9 @@ private:
         cout << "========================================\n";
         cout << " [1] Agregar Paquete\n";
         cout << " [2] Ver mis Paquetes\n";
-        cout << " [3] Realizar Pago\n";
-        cout << " [4] Cerrar Sesion\n";
+        cout << " [3] Calcular costo de Envio\n";
+        cout << " [4] Realizar Pago\n";
+        cout << " [5] Cerrar Sesion\n";
         cout << "========================================\n";
         cout << " Presione ESC para cerrar sesion\n";
         cout << "----------------------------------------\n";
@@ -131,18 +132,18 @@ private:
         cout << "========================================\n";
         cout << " [1] Ordenar Paquetes por Peso\n";
         cout << " [2] Mostrar Todos los Paquetes\n";
-        cout << " [3] Calcular Costo de Envio\n";
+        cout << " [3] Calcular costo de Envio\n";
         cout << " [4] Ver Todos los Clientes\n";
         cout << " [5] Ver Cola de Pagos\n";
         cout << " [6] Procesar Siguiente Pago\n";
         cout << " [7] Buscar Paquete por ID (Hash)\n";
         cout << " [8] Ver Estadisticas Hash Table\n";
         cout << " [9] Buscar por Rango de Peso\n";
-        cout << " [11] Ver Red de Rutas\n";
-        cout << " [12] Agregar Nueva Ruta\n";
-        cout << " [13] Agregar Nueva Ubicacion\n";
-        cout << " [14] Analizar Eficiencia de Rutas\n";
-        cout << " [15] Comparar Rutas Alternativas\n";
+        cout << " [10] Ver Red de Rutas\n";
+        cout << " [11] Agregar Nueva Ruta\n";
+        cout << " [12] Agregar Nueva Ubicacion\n";
+        cout << " [13] Analizar Eficiencia de Rutas\n";
+        cout << " [14] Comparar Rutas Alternativas\n";
         cout << "========================================\n";
         cout << " Presione ESC para volver\n";
         cout << "----------------------------------------\n";
@@ -531,10 +532,8 @@ private:
         system("cls");
         cout << "========================================\n";
         cout << "       RED DE RUTAS DISPONIBLES         \n";
-        cout << "========================================\n\n";
-
+        cout << "========================================\n";
         sistemaTransporte.mostrarRedRutas();
-
         cout << "\n========================================\n";
         system("pause");
     }
@@ -626,7 +625,9 @@ private:
             {"Lima", "Cusco", 25},
             {"Lima", "Trujillo", 15},
             {"Arequipa", "Cusco", 30},
-            {"Chiclayo", "Piura", 10}
+            {"Puno", "Lima", 36},
+            {"Lima", "Cangallo", 40},
+            {"Cusco", "Ica", 28},
         };
 
         cout << "Analizando rutas mas comunes...\n\n";
@@ -639,7 +640,7 @@ private:
 
         for (const auto& ruta : rutasComunes) {
             // Crear instancia de Dijkstra
-            AlgoritmoDijkstra<double> dijkstra(*sistemaTransporte.getGrafoRutas());
+            Dijkstra<double> dijkstra(*sistemaTransporte.getGrafoRutas());
             ResultadoDijkstra<double> resultado =
                 dijkstra.ejecutarPorNombre(ruta.origen, ruta.destino);
 
@@ -706,7 +707,6 @@ private:
 
         system("pause");
     }
-
 
 
     void verTodosClientes() {
@@ -786,7 +786,6 @@ private:
         while (!salir) {
             menuLoginUsuario();
 
-            // --- INICIO DE MODIFICACION (Manejo de entrada con Enter) ---
             string opcionPrincipalStr;
             int opcionPrincipal = -1;
 
@@ -803,8 +802,6 @@ private:
                     opcionPrincipal = -1;
                 }
             }
-            // --- FIN DE MODIFICACION ---
-
 
             switch (opcionPrincipal) {
             case 1: {
@@ -825,12 +822,11 @@ private:
                     while (!salirUsuario) {
                         menuUsuario(nombreCompleto);
 
-                        // --- INICIO DE MODIFICACION (Manejo de entrada con Enter) ---
                         string opcionUsuarioStr;
                         int opcionUsuario = -1;
 
                         if (!funcionSalida("", opcionUsuarioStr)) {
-                            opcionUsuario = 4; // ESC en este menú significa Cerrar Sesión (Opción 4)
+                            opcionUsuario = 5; // ESC en este menú significa Cerrar Sesión
                         }
                         else {
                             try {
@@ -842,7 +838,6 @@ private:
                                 opcionUsuario = -1;
                             }
                         }
-                        // --- FIN DE MODIFICACION ---
 
                         switch (opcionUsuario) {
                         case 1:
@@ -852,9 +847,12 @@ private:
                             verMisPaquetes(clienteID);
                             break;
                         case 3:
-                            realizarPago();
+                            calcularCostoEnvio();
                             break;
                         case 4:
+                            realizarPago();
+                            break;
+                        case 5:
                             cout << "\nCerrando sesion...\n";
                             salirUsuario = true;
                             break;
@@ -888,6 +886,9 @@ private:
                 int nuevoID = Cliente::generarIDUnico("clientes.txt");
                 Cliente nuevo(nuevoID, n, a, d, p, c, pass);
                 listaClientes.insertar(nuevo);
+                ofstream out("clientes.txt", ios::app);
+                nuevo.guardarClienteTexto(out);
+                out.close();
                 listaClientes.guardarClientes("clientes.txt");
 
                 cout << "\n========================================\n";
@@ -964,14 +965,11 @@ private:
     }
 
 
-
-
     void sistemaAdministrador() {
         bool salir = false;
         while (!salir) {
             menuAdministrador();
 
-            // --- INICIO DE MODIFICACION (Manejo de entrada con Enter) ---
             string opcionStr;
             int opcion = -1;
 
@@ -990,7 +988,6 @@ private:
             catch (...) {
                 opcion = -1; // Valor no válido
             }
-            // --- FIN DE MODIFICACION ---
 
             switch (opcion) {
             case 1:
@@ -1020,19 +1017,19 @@ private:
             case 9:
                 buscarPorRangoPeso();
                 break;
-            case 11:
+            case 10:
                 verRedRutas();
                 break;
-            case 12:
+            case 11:
                 agregarNuevaRuta();
                 break;
-            case 13:
+            case 12:
                 agregarNuevaUbicacion();
                 break;
-            case 14:
+            case 13:
                 analizarEficienciaRutas();
                 break;
-            case 15:
+            case 14:
                 compararRutasAlternativas();
                 break;
             case 27:  // Asumimos que ESC ya fue manejado por funcionSalida
