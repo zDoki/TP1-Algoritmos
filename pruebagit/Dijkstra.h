@@ -11,7 +11,7 @@ private:
     const Grafo<T>& grafo;
     static const int MAX_NODOS = 50;
 
-    // Encuentra el nodo no visitado con menor distancia
+  
     int encontrarMinimoNoVisitado(T* distancias, bool* visitado, int totalNodos) const {
         T minimo = 999999;
         int indiceMinimo = -1;
@@ -39,7 +39,7 @@ private:
 public:
     Dijkstra(const Grafo<T>& _grafo) : grafo(_grafo) {}
 
-    // Ejecuta Dijkstra desde un nodo origen a todos los demas
+   
     ResultadoDijkstra<T> ejecutar(int idOrigen) const {
         ResultadoDijkstra<T> resultado;
         int totalNodos = MAX_NODOS;
@@ -49,7 +49,6 @@ public:
         resultado.predecesores = new int[totalNodos];
         bool* visitado = new bool[totalNodos];
 
-        // Inicializacion
         for (int i = 0; i < totalNodos; i++) {
             resultado.distancias[i] = 999999;
             resultado.predecesores[i] = -1;
@@ -58,7 +57,6 @@ public:
 
         resultado.distancias[idOrigen] = 0;
 
-        // Algoritmo principal de Dijkstra
         for (int cont = 0; cont < totalNodos; cont++) {
             int u = encontrarMinimoNoVisitado(resultado.distancias, visitado, totalNodos);
 
@@ -66,7 +64,7 @@ public:
 
             visitado[u] = true;
 
-            // Relajacion de aristas
+          
             ListaAdyacencia<T>* lista = grafo.obtenerAdyacencias(u);
             if (lista) {
                 Arista<T>* arista = lista->cabeza;
@@ -88,7 +86,7 @@ public:
         return resultado;
     }
 
-    // Ejecuta Dijkstra usando nombres de ubicaciones
+    //  dijkstra nombre y ubica
     ResultadoDijkstra<T> ejecutarPorNombre(const string& origen, const string& destino) const {
         int idOrigen = buscarIdPorNombre(origen);
         int idDestino = buscarIdPorNombre(destino);
@@ -106,7 +104,7 @@ public:
         return resultado;
     }
 
-    // Reconstruye la ruta desde origen hasta destino
+    // rutta origen-destino
     void reconstruirRuta(int destino, const ResultadoDijkstra<T>& resultado, int* ruta, int& longitudRuta) const {
         longitudRuta = 0;
         int actual = destino;
@@ -119,7 +117,8 @@ public:
             actual = resultado.predecesores[actual];
         }
 
-        // Invertir la ruta
+        // invierte ruta
+
         for (int i = 0; i < tempLongitud; i++) {
             ruta[i] = temp[tempLongitud - 1 - i];
         }

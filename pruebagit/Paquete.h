@@ -46,7 +46,7 @@ public:
 							break;
 						}
 					}
-					catch (...) {// Si hay un error al convertir, simplemente 
+					catch (...) {// Si hay un error 
 				
 						continue;
 					}

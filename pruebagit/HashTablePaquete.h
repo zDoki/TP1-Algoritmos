@@ -18,11 +18,11 @@ public:
 template<typename T>
 class HashTablePaquete {
 private:
-    static const int TAMANO_TABLA = 100; // Tamaño de la tabla hash
+    static const int TAMANO_TABLA = 100; 
     NodoHash<T>* tabla[TAMANO_TABLA];
     int numElementos;
 
-    // Función hash: usa módulo para calcular el índice
+    // Función hash
     int funcionHash(int clave) const {
         return clave % TAMANO_TABLA;
     }
@@ -54,7 +54,7 @@ public:
             actual = actual->siguiente;
         }
 
-        // Insertar al inicio de la lista enlazada (manejo de colisiones)
+        // lista enlazada para hash table
         NodoHash<T>* nuevoNodo = new NodoHash<T>(clave, paquete);
         nuevoNodo->siguiente = tabla[indice];
         tabla[indice] = nuevoNodo;
@@ -63,7 +63,7 @@ public:
         return true;
     }
 
-    // Buscar un paquete por su ID
+
     Paquete<T>* buscar(int idPaquete) {
         int indice = funcionHash(idPaquete);
         NodoHash<T>* actual = tabla[indice];

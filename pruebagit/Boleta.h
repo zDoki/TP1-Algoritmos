@@ -11,18 +11,18 @@ public:
 
 	string ajustarTexto(const string& texto, size_t ancho) const {
 		if (texto.size() > ancho) {
-			return texto.substr(0, ancho); // recortar texto
+			return texto.substr(0, ancho); 
 		}
 		else
 		{
-			return texto + string(ancho - texto.size(), ' '); // rellena con espacios
+			return texto + string(ancho - texto.size(), ' ');
 		}
 	}
 
 	Boleta(string num = "", const Pago<T>& pago = Pago<T>())
 		: numeroBoleta(num), pagoAsociado(pago)
 	{
-		// para saber fecha
+		
 		fechaEmision = obtenerFechaHoraActual();
 	}
 

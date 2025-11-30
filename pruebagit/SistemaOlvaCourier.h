@@ -184,7 +184,7 @@ private:
         if (!funcionSalida("Sede de Origen: ", sedeOrigen)) return;
         if (!funcionSalida("Sede de Destino: ", destino)) return;
 
-        // *** NUEVO: Mostrar información de ruta antes de confirmar ***
+       
         cout << "\n--- ANALISIS DE RUTA ---\n";
 
         sistemaTransporte.mostrarRutaDetallada(sedeOrigen, destino, (int)peso);
@@ -201,7 +201,7 @@ private:
 
         Paquete<string> nuevoPaquete(descripcion, peso, sedeOrigen, destino, clienteID);
 
-        // Agregar a ambas estructuras
+       
         pilaPaquetes.push(nuevoPaquete);
         hashPaquetes.insertar(nuevoPaquete);
         arbolPaquetes.insertar(nuevoPaquete);
@@ -253,7 +253,7 @@ private:
         cout << "\nCalculando ruta optima...\n";
         sistemaTransporte.mostrarRutaDetallada(depOrigen, depDestino, peso);
 
-        // Obtener precio
+     
         double precioTotal = sistemaTransporte.calcularPrecio(depOrigen, depDestino, peso);
 
         cout << "\nMetodos de Pago Disponibles:\n";
@@ -575,7 +575,7 @@ private:
         cout << string(72, '-') << "\n";
 
         for (const auto& ruta : rutasComunes) {
-            // Crear instancia de Dijkstra
+           
             Dijkstra<double> dijkstra(*sistemaTransporte.getGrafoRutas());
             ResultadoDijkstra<double> resultado =
                 dijkstra.ejecutarPorNombre(ruta.origen, ruta.destino);
@@ -594,7 +594,6 @@ private:
 
         cout << "\n========================================\n";
 
-        // Mostrar estadísticas de la red
         AnalizadorRutas<double> analizador(*sistemaTransporte.getGrafoRutas());
         analizador.mostrarEstadisticasRed();
 
@@ -726,7 +725,7 @@ private:
             int opcionPrincipal = -1;
 
             if (!funcionSalida("", opcionPrincipalStr)) {
-                opcionPrincipal = 3; // ESC significa Volver al Menu Principal
+                opcionPrincipal = 3; 
             }
             else {
                 try {
@@ -909,20 +908,20 @@ private:
             string opcionStr;
             int opcion = -1;
 
-            // Usar funcionSalida para capturar la opción como string
+           
             if (!funcionSalida("", opcionStr)) {
-                salir = true; // Si se presiona ESC, sale del bucle
+                salir = true; 
                 continue;
             }
 
-            // Intentar convertir la entrada a entero
+         
             try {
                 if (!opcionStr.empty()) {
                     opcion = stoi(opcionStr);
                 }
             }
             catch (...) {
-                opcion = -1; // Valor no válido
+                opcion = -1;
             }
 
             switch (opcion) {
@@ -968,7 +967,7 @@ private:
             case 14:
                 compararRutasAlternativas();
                 break;
-            case 27:  // Asumimos que ESC ya fue manejado por funcionSalida
+            case 27:  
                 salir = true;
                 break;
             default:

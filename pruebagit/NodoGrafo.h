@@ -1,7 +1,7 @@
 #pragma once
 #include "Librerias.h"
 
-// Nodo del grafo que representa una ubicacion
+// Nodo del grafo ubicacion
 template<typename T>
 class NodoGrafo {
 public:

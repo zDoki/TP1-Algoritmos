@@ -25,7 +25,7 @@ public:
             nuevoID = rand() % 999 + 100;//100-999
             repetido = false;
 
-            // Verificar si el id ya existe en el archivo
+          
             ifstream in(archivo);
             string linea;
             while (getline(in, linea)) {
