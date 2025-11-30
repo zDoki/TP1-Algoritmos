@@ -1,8 +1,9 @@
 #pragma once
 #include "NodoPila.h"
 
+	//funcion lifo
 template<typename T>
-class PilaPaquete {//lifo
+class PilaPaquete {
 public:
 	NodoPila<T>* tope;
 	int tamanio;

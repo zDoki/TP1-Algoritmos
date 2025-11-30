@@ -34,9 +34,6 @@ public:
         delete grafoRutas;
     }
 
-  
-
-
     // Inicializa la red de rutas del Perú
     void inicializarRutas() {
         grafoRutas->agregarNodo(0, "Lima");
