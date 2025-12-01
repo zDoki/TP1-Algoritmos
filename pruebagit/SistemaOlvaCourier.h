@@ -820,11 +820,12 @@ private:
 
                 int nuevoID = Cliente::generarIDUnico("clientes.txt");
                 Cliente nuevo(nuevoID, n, a, d, p, c, pass);
+
+              
                 listaClientes.insertar(nuevo);
-                ofstream out("clientes.txt", ios::app);
-                nuevo.guardarClienteTexto(out);
-                out.close();
+
                 listaClientes.guardarClientes("clientes.txt");
+
 
                 cout << "\n========================================\n";
                 cout << "  REGISTRO EXITOSO!\n";

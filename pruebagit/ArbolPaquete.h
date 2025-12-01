@@ -123,7 +123,10 @@ public:
         cout << "========================================\n";
     }
 
+    // En pruebagit/ArbolPaquete.h
+
     void cargarDesdeArchivo(const string& nombreArchivo) {
+        // Limpiar el árbol existente antes de cargar
         liberarNodos(raiz);
         raiz = nullptr;
         numElementos = 0;
@@ -137,40 +140,38 @@ public:
         int cargados = 0;
         string linea;
 
+        // LEER UNA LÍNEA POR ITERACIÓN
         while (getline(archivo, linea)) {
             if (linea.empty()) continue;
 
-            stringstream ss(linea);
             string campo;
-            Paquete<T> paquete;
-
+            Paquete<T> paquete; 
             try {
-              
-                if (!paquete.leerDesdeArchivo(archivo)) continue; 
+               
+               
+                stringstream ss_carga(linea);
 
-              
-
-                stringstream ss_carga(linea); 
-
+     
                 getline(ss_carga, campo, '|');
                 if (!campo.empty()) paquete.id = stoi(campo);
 
+    
                 getline(ss_carga, campo, '|');
                 if (!campo.empty()) paquete.clienteID = stoi(campo);
 
+        
                 getline(ss_carga, paquete.descripcion, '|');
 
+            
                 getline(ss_carga, campo, '|');
                 if (!campo.empty()) paquete.peso = stod(campo);
 
+           
                 getline(ss_carga, paquete.sedeOrigen, '|');
                 getline(ss_carga, paquete.destino, '|');
 
-
-                Paquete<T> nuevoPaquete(paquete.descripcion, paquete.peso, paquete.sedeOrigen, paquete.destino, paquete.clienteID);
-                nuevoPaquete.id = paquete.id;
-
-                insertar(nuevoPaquete);
+               
+                insertar(paquete);
                 cargados++;
             }
             catch (...) {
@@ -181,7 +182,6 @@ public:
         archivo.close();
         cout << "Se cargaron " << cargados << " paquetes en el Arbol Binario de Busqueda.\n";
     }
-
 
 
 };

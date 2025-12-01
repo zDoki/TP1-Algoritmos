@@ -1,1 +1,3 @@
 150|Miguel|Bravo|1234|peru|miguel@gmail.com|pp
+465|Renzo|Navarro|4324|Peru|renzo@gmail.com|renzo
+513|Jorge|surco|3424|peru|jorge@gmail.com|asd
