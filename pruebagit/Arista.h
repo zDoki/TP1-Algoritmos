@@ -1,7 +1,7 @@
 #pragma once
 #include "Librerias.h"
 
-// Arista 
+
 template<typename T>
 class Arista {
 public:

@@ -22,7 +22,7 @@ private:
     NodoHash<T>* tabla[TAMANO_TABLA];
     int numElementos;
 
-    // Función hash
+   
     int funcionHash(int clave) const {
         return clave % TAMANO_TABLA;
     }
@@ -75,7 +75,7 @@ public:
             actual = actual->siguiente;
         }
 
-        return nullptr; // No encontrado
+        return nullptr; 
     }
 
     bool eliminar(int idPaquete) {

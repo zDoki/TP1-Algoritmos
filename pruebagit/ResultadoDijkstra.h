@@ -1,8 +1,7 @@
 #pragma once
 #include "Librerias.h"
 
-// Estructura para almacenar resultados de Dijkstra 
-// Esta estructura gestiona la memoria de los arrays dinamicos
+
 
 template<typename T>
 class ResultadoDijkstra {
@@ -17,7 +16,7 @@ public:
         distancias(nullptr), totalNodos(0) {
     }
 
-    // Constructor de copia para evitar problemas de memoria
+   
     ResultadoDijkstra(const ResultadoDijkstra& otro) {
         exito = otro.exito;
         distanciaTotal = otro.distanciaTotal;
@@ -44,7 +43,6 @@ public:
         }
     }
 
-    // Operador de asignacion
     ResultadoDijkstra& operator=(const ResultadoDijkstra& otro) {
         if (this != &otro) {
             if (predecesores) delete[] predecesores;

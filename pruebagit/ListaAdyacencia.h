@@ -2,7 +2,7 @@
 #include "Librerias.h"
 #include "Arista.h"
 
-// Lista de adyacencia para cada nodo
+// Lista de adyacencia para cada nodo se usa en el grafo 
 template<typename T>
 class ListaAdyacencia {
 public:

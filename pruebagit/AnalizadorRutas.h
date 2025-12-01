@@ -1,7 +1,6 @@
 #pragma once
 #include "Grafo.h"
 
-// ANALIZADOR DE RUTAS
 template<typename T>
 class AnalizadorRutas {
 private:

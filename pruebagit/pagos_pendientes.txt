@@ -1,3 +1,2 @@
-Envio Lima -> Ayacucho (50 kg)|1|250.00|Tarjeta
 Envio Lima -> Ayacucho (13 kg)|1|205.00|Tarjeta
 Envio Lima -> Ayacucho (23 kg)|1|225.00|Yape

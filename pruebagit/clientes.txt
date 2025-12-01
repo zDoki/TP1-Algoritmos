@@ -1,16 +1,1 @@
-105|renzo|nava|778452|peru|gato@.com|rn123 
-120|matias|garcia|782035|peru|garci@.com|maga105 
-952|lucas|merino|605102|peru|merin@.com|merlu420 
-615|mario|melgar|840125|peru|marito@.com|melman165 
-129|alonso|alfonso|910245|peru|alfondo@.com|alfalfa40 
-116|fredy|fausto|943057|peru|fredic@gmail.com|fafi245 
-383|miguel|bravo|231231|peru|miguel@gmail.com|pp 
-647|jorge|surco|72227737|peru|u202015743@upc.com|1234567 
-123|miguel|bravo|2312321|Peru|miguel@gmail.com|123 
-189|juan|pp|7312234124|peru|adawd@gmail.com|sdas 
-619|jesu|Navarro|77541260|Peru|jhesnaf@gmail.com|pronaf124 
-901|Malcom|Adams|45127502|Peru|admas@gmail.com|maladas23 
-739|Sebastian|Socorro|84502361|Peru|Seba@gmail.com|Sebacorriendo45 
-263|Juanita|Ghimel|41027895|Peru|Ganadita@gmail.com|Juanita123
-821|Esteven|Navarrete|84102065|Peru|steven@gmail.com|estenavajaso147 
-882|Paulito|Pastorcito|77885410|Peru|pastorpaulito@gmail.co|paseatupalito456
+150|Miguel|Bravo|1234|peru|miguel@gmail.com|pp

@@ -46,7 +46,7 @@ public:
 							break;
 						}
 					}
-					catch (...) {// Si hay un error 
+					catch (...) {
 				
 						continue;
 					}

@@ -4,7 +4,7 @@
 #include "NodoGrafo.h"
 #include "Arista.h"
 
-// Grafo implementado con lista de adyacencia
+
 template<typename T>
 class Grafo {
 private:

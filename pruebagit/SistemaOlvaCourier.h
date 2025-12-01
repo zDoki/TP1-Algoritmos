@@ -761,7 +761,7 @@ private:
                         int opcionUsuario = -1;
 
                         if (!funcionSalida("", opcionUsuarioStr)) {
-                            opcionUsuario = 5; // ESC en este menú significa Cerrar Sesión
+                            opcionUsuario = 5; // ESC
                         }
                         else {
                             try {
@@ -1004,22 +1004,22 @@ public:
         while (!salir) {
             menuPrincipal();
 
-            // --- INICIO DE MODIFICACION (Manejo de entrada con Enter) ---
+           
             string opcionStr;
             int opcion = -1;
 
             if (!funcionSalida("", opcionStr)) {
-                opcion = 3; // ESC significa salir (Opción 3)
+                opcion = 3; // ESC  salir 
             }
             else {
-                // Intentar convertir la entrada a entero
+               
                 try {
                     if (!opcionStr.empty()) {
                         opcion = stoi(opcionStr);
                     }
                 }
                 catch (...) {
-                    opcion = -1; // Valor no válido
+                    opcion = -1; 
                 }
             }
           
